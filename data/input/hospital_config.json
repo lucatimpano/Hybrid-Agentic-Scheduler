@@ -1,0 +1,53 @@
+{
+    "orizzonte_temporale": {
+        "data_inizio": "2026-12-07",
+        "data_fine": "2027-01-06",
+        "totale_giorni": 31
+    },
+    "definizione_turni": {
+        "M": {
+            "nome": "Mattina",
+            "orario": "08:00-14:00",
+            "durata_ore": 6,
+            "peso_valore": 1
+        },
+        "P": {
+            "nome": "Pomeriggio",
+            "orario": "14:00-20:00",
+            "durata_ore": 6,
+            "peso_valore": 1
+        },
+        "N": {
+            "nome": "Notte",
+            "orario": "20:00-08:00",
+            "durata_ore": 12,
+            "peso_valore": 2
+        }
+    },
+    "vincoli_hard_istituzionali": {
+        "turni_mensili_obbligatori": 25,
+        "max_ore_settimanali_mobili": 36,
+        "ampiezza_finestra_ore_giorni": 7,
+        "giorni_riposo_post_notte": 2,
+        "max_turni_giornalieri": 1
+    },
+    "scenari_configurazione": {
+        "Caso_A": {
+            "descrizione": "Lavoratori omogenei",
+            "totale_lavoratori": 13,
+            "copertura_minima_per_turno": {
+                "standard": 2,
+                "specializzati": 0
+            }
+        },
+        "Caso_B": {
+            "descrizione": "Lavoratori standard e specializzati con vicedirezione",
+            "totale_lavoratori_standard": 13,
+            "totale_lavoratori_specializzati": 7,
+            "copertura_minima_per_turno": {
+                "standard": 2,
+                "specializzati": 1
+            }
+        }
+    }
+}
