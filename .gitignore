@@ -43,4 +43,16 @@ venv.bak/
 .coverage
 htmlcov/
 test/
-Progetto IA Tradotto.md
+
+# File di analisi e lavoro (non fanno parte del progetto)
+analisi_claude.md
+analisi_progetto.md
+divisione_compiti.md
+"Progetto IA Tradotto.md"
+
+# Editor e OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo

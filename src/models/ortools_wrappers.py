@@ -1,4 +1,5 @@
 from ortools.sat.python import cp_model
+from .schemas import SHIFT_HOURS
 
 
 class SmartSchedulerWrapper:
@@ -12,7 +13,7 @@ class SmartSchedulerWrapper:
 
         # Inizializzo il modello di OR-Tools
         self.model = cp_model.CpModel()
-        self.shift_hours = [6,6,12]     # 0 = Mattina, 1 = Pomeriggio, 2 = Notte
+        self.shift_hours = SHIFT_HOURS     # 0 = Mattina, 1 = Pomeriggio, 2 = Notte
         
         #Inzializzo il dizionario vuoto per definire i turni
         self.x = {}
