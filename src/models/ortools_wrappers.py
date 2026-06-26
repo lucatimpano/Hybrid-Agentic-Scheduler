@@ -98,30 +98,154 @@ class SmartSchedulerWrapper:
     Parte di soft constraints.
     '''
 
-    # L'IA ci restituirà un dizionari di pesi, per ogni medico asocia un puntaggio al turno
-    # es +10 mattina -5notte ecc.
-    def maximize_fairness_objective(self, preferences_dict):
-        # TODO: Al momento questo metodo gestisce solo i pesi base dei turni (shift_weights).
-        # Per gestire i "Soft Constraints" (es. avoid_shift_date, max_shifts_per_week, ecc.) 
-        # dovrai leggere l'array "soft_constraints" dal dizionario e aggiungere 
-        # premi o penalità algebriche alla lista 'satisfaction_terms'.
-        # Es: Se c'è "free_date", aggiungi una penalità (-peso) se la variabile di quel giorno è a 1.
+    def maximize_fairness_objective(self, preferences_dict: dict):
+        """
+        Imposta la funzione obiettivo Maximin per massimizzare la soddisfazione del medico più scontento.
         
-        # imposto il range possibile per la soddisfazione minima, in questo caso da -250 a 250
-        self.min_satisfaction = self.model.NewIntVar(-250,250, "min_sat")
+        Parametri:
+        ----------
+        preferences_dict : dict
+            Un dizionario strutturato che rappresenta le preferenze di tutti i medici.
+            Corrisponde al campo 'workers' dello schema 'AllPreferences'.
+            Esempio di struttura attesa:
+            {
+                "ID_0": {
+                    "role": "standard",
+                    "shift_weights": [10, 5, -5],
+                    "soft_constraints": [
+                        {"type": "free_date", "value": "2026-12-25", "weight": 8}
+                    ]
+                },
+                "ID_1": { ... }
+            }
+        """
+        # Imposto un range più ampio per supportare pesi multipli e penalità
+        self.min_satisfaction = self.model.NewIntVar(-1000, 1000, "min_sat")
+        start_date = datetime.strptime(SCHEDULE_START, "%Y-%m-%d")
 
         for w in range(self.num_workers):
             worker_id = f"ID_{w}"
-            weights = preferences_dict[worker_id]["shift_weights"]
+            # Estraiamo in modo sicuro le preferenze del medico
+            worker_prefs = preferences_dict.get(worker_id, {})
+            weights = worker_prefs.get("shift_weights", [0, 0, 0])
+            soft_constraints = worker_prefs.get("soft_constraints", [])
+            
+            # Lista in cui inseriamo il prodotto tra la variabile booleana del turno e il peso di quel turno
             satisfaction_terms = []
+            
+            # 1. Soddisfazione base dai pesi dei turni
             for d in range(self.num_days):
                 for s in range(self.num_shifts):
                     shift_var = self.x[(w,d,s)]
                     shift_weight = weights[s]
-
                     satisfaction_terms.append(shift_var * shift_weight)
-            # Dobbiamo garantire che ogni medico abbia un grado di soddisfazione piu alto possibile
+                    
+            # 2. Elaborazione dei Soft Constraints
+            for sc in soft_constraints:
+                c_type = sc.get("type")
+                weight = sc.get("weight", 0)
+                val = sc.get("value")
+                
+                # PRIMO VINCOLO SOFT: free_date (Preferisce non lavorare in una certa data)
+                if c_type == "free_date" and val:
+                    try:
+                        target_date = datetime.strptime(val, "%Y-%m-%d")
+                        target_day_index = (target_date - start_date).days
+                        
+                        # Controlliamo che la data ricada nel periodo di pianificazione
+                        if 0 <= target_day_index < self.num_days:
+                            # Se lavora in qualsiasi turno di quel giorno, sottraiamo il peso
+                            for s in range(self.num_shifts):
+                                satisfaction_terms.append(self.x[(w, target_day_index, s)] * (-weight))
+                    except ValueError:
+                        pass # Formato data errato, proseguiamo
+                        
+                # SECONDO VINCOLO SOFT: free_weekday (Preferisce non lavorare in un giorno della settimana)
+                elif c_type == "free_weekday" and val:
+                    for d in range(self.num_days):
+                        current_date = start_date + timedelta(days=d)
+                        if current_date.strftime("%A") == val:
+                            # Se lavora in qualsiasi turno di questo giorno, sottraiamo il peso
+                            for s in range(self.num_shifts):
+                                satisfaction_terms.append(self.x[(w, d, s)] * (-weight))
+                                
+                # TERZO VINCOLO SOFT: work_weekday (Preferisce lavorare in un giorno della settimana)
+                # Uguale al precedente, ma al contrario, aggiungiamo il peso
+                elif c_type == "work_weekday" and val:
+                    for d in range(self.num_days):
+                        current_date = start_date + timedelta(days=d)
+                        if current_date.strftime("%A") == val:
+                            # Se lavora in qualsiasi turno di questo giorno, AGGIUNGIAMO il peso (è un premio)
+                            for s in range(self.num_shifts):
+                                satisfaction_terms.append(self.x[(w, d, s)] * weight)
+                                
+                # QUARTO VINCOLO SOFT: avoid_shift_date (Preferisce evitare uno specifico turno in una certa data)
+                elif c_type == "avoid_shift_date" and val:
+                    shift_str = sc.get("shift")
+                    if shift_str in SHIFT_TYPES:
+                        try:
+                            target_date = datetime.strptime(val, "%Y-%m-%d")
+                            target_day_index = (target_date - start_date).days
+                            
+                            if 0 <= target_day_index < self.num_days:
+                                shift_idx = SHIFT_TYPES.index(shift_str)
+                                # Sottraiamo il peso solo se gli viene assegnato QUEL preciso turno in QUELLA precisa data
+                                satisfaction_terms.append(self.x[(w, target_day_index, shift_idx)] * (-weight))
+                        except ValueError:
+                            pass # Formato data errato
+                            
+                # QUINTO VINCOLO SOFT: max_shifts_per_week (Preferisce non superare N turni a settimana)
+                elif c_type == "max_shifts_per_week" and val is not None:
+                    max_s = int(val)
+                    # Suddividiamo il mese in blocchi di 7 giorni (settimane)
+                    for start_d in range(0, self.num_days, 7):
+                        week_days = min(7, self.num_days - start_d)
+                        
+                        # Raccogliamo tutte le variabili dei turni di questa settimana per questo medico
+                        week_shifts = []
+                        for d_off in range(week_days):
+                            for s in range(self.num_shifts):
+                                week_shifts.append(self.x[(w, start_d + d_off, s)])
+                        
+                        # Variabile booleana che vale 1 SOLO se supera il limite
+                        exceeds_var = self.model.NewBoolVar(f"exceeds_{w}_{start_d}")
+                        
+                        # Variabile intera di supporto per la somma dei turni
+                        sum_var = self.model.NewIntVar(0, 21, f"sum_shifts_{w}_{start_d}")
+                        self.model.Add(sum_var == sum(week_shifts))
+                        
+                        # Colleghiamo exceeds_var al superamento del limite
+                        self.model.Add(sum_var > max_s).OnlyEnforceIf(exceeds_var)
+                        self.model.Add(sum_var <= max_s).OnlyEnforceIf(exceeds_var.Not())
+                        
+                        # Sottraiamo il peso se supera il limite
+                        satisfaction_terms.append(exceeds_var * (-weight))
+                        
+                # SESTO VINCOLO SOFT: avoid_afternoon_and_night_same_week
+                elif c_type == "avoid_afternoon_and_night_same_week":
+                    for start_d in range(0, self.num_days, 7):
+                        week_days = min(7, self.num_days - start_d)
+                        
+                        # Fa almeno un pomeriggio in settimana?
+                        has_afternoon = self.model.NewBoolVar(f"has_aft_{w}_{start_d}")
+                        afternoon_shifts = [self.x[(w, start_d + d_off, 1)] for d_off in range(week_days)]
+                        self.model.AddMaxEquality(has_afternoon, afternoon_shifts) # 1 se almeno un turno è 1
+                        
+                        # Fa almeno una notte in settimana?
+                        has_night = self.model.NewBoolVar(f"has_night_{w}_{start_d}")
+                        night_shifts = [self.x[(w, start_d + d_off, 2)] for d_off in range(week_days)]
+                        self.model.AddMaxEquality(has_night, night_shifts)
+                        
+                        # Li fa entrambi? (AND logico, si usa AddMinEquality per i booleani)
+                        has_both = self.model.NewBoolVar(f"has_both_{w}_{start_d}")
+                        self.model.AddMinEquality(has_both, [has_afternoon, has_night])
+                        
+                        # Sottraiamo il peso se li fa entrambi
+                        satisfaction_terms.append(has_both * (-weight))
+
+            # Garantiamo che il punteggio del medico sia maggiore o uguale al punteggio minimo globale
             self.model.Add(sum(satisfaction_terms) >= self.min_satisfaction)
+            
         # Ora dobbiamo massimizzare la soddisfazione minima tra tutti i medici
         self.model.Maximize(self.min_satisfaction)
 
