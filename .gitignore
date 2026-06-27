@@ -44,12 +44,8 @@ venv.bak/
 htmlcov/
 test/
 
-# File di analisi e lavoro (non fanno parte del progetto)
-analisi_claude.md
-analisi_progetto.md
-divisione_compiti.md
-constraints_recap.md
-"Progetto IA Tradotto.md"
+# Cartella documentazione ignorata per i push
+docs/
 
 
 # Editor e OS
