@@ -44,13 +44,14 @@ class SmartSchedulerWrapper:
                     days.append(self.x[(w,d,s)])
                 self.model.AddAtMostOne(days)    
     
-    # Aggiungo il vincolo che un lavoratore deve lavorare esattamente un tot di turni al mese
+    # Aggiungo il vincolo che un lavoratore deve lavorare esattamente un tot di turni al mese (Notte vale doppio)
     def check_month_sum(self, target_shifts=REQUIRED_SHIFTS_PER_MONTH):
         for w in range(self.num_workers):
             worker_var = []
             for d in range(self.num_days):
                 for s in range(self.num_shifts):
-                    worker_var.append(self.x[(w,d,s)])
+                    weight = 2 if s == 2 else 1
+                    worker_var.append(self.x[(w,d,s)] * weight)
             num_shifts_per_worker = sum(worker_var)
             self.model.Add(num_shifts_per_worker == target_shifts)
     
