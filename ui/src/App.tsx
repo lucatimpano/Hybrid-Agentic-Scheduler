@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import {
   CheckIcon, LoaderIcon, CircleIcon, CalendarIcon,
   UsersIcon, ChevronDownIcon, RotateCcwIcon, AlertCircleIcon, PlayIcon
@@ -56,8 +56,61 @@ function generateMockSchedule(numWorkers: number, numDays: number): Schedule {
         }
       }
     }
-  }
+}
   return { assignments }
+}
+
+// ─── Avatars ──────────────────────────────────────────────────────────────────
+
+const AVATARS = [
+  "https://www.untitledui.com/images/avatars/olivia-rhye?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/phoenix-baker?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/lana-steiner?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/demi-wilkinson?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/candice-wu?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/natali-craig?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/drew-cano?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/orlando-diggs?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/andi-lane?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/kate-morrison?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/olivia-rhye?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/phoenix-baker?fm=webp&q=80",
+  "https://www.untitledui.com/images/avatars/lana-steiner?fm=webp&q=80",
+]
+
+function Avatar({ src, placeholder, className = '' }: { src?: string; placeholder?: React.ReactNode; className?: string }) {
+  return (
+    <div className={`avatar-circle ${className}`}>
+      {src ? <img src={src} alt="avatar" className="avatar-img" /> : placeholder}
+    </div>
+  );
+}
+
+function AvatarAddButton() {
+  return (
+    <button className="avatar-add-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+    </button>
+  );
+}
+
+function WorkersAvatarGroup({ count }: { count: number }) {
+  const displayCount = Math.min(count, 10);
+  const remaining = count > 10 ? count - 10 : 0;
+  
+  return (
+    <div className="avatar-group-wrap">
+      <div className="avatar-overlap-group">
+        {AVATARS.slice(0, displayCount).map((src, i) => (
+          <Avatar key={i} src={src} />
+        ))}
+        {remaining > 0 && (
+          <Avatar placeholder={<span className="avatar-placeholder">+{remaining}</span>} />
+        )}
+      </div>
+      <AvatarAddButton />
+    </div>
+  );
 }
 
 // ─── Graph simulation script ───────────────────────────────────────────────
@@ -210,7 +263,8 @@ function ScheduleGrid({ schedule, numDays }: { schedule: Schedule; numDays: numb
             onClick={() => setExpanded(expanded === w ? null : w)}
           >
             <div className="schedule-worker-col">
-              <span className="worker-id">{w}</span>
+              <Avatar src={AVATARS[parseInt(w.split('_')[1]) % AVATARS.length]} className="grid-avatar" />
+              <span className="worker-id">{w.replace('ID_', 'Dr. ')}</span>
               <ChevronDownIcon size={10} className={`chevron ${expanded === w ? 'chevron--open' : ''}`} />
             </div>
 
@@ -254,6 +308,16 @@ export default function App() {
   const [numWorkers, setNumWorkers] = useState(13)
   const [numDays, setNumDays] = useState(31)
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
+
+  // Autoscroll verso il basso durante la generazione
+  useEffect(() => {
+    if (running || schedule) {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }, [log, schedule, running]);
 
   const pushLog = useCallback((agent: AgentId, type: LogEntry['type'], message: string) => {
     setLog(prev => [...prev, { ts: Date.now(), agent, type, message }])
@@ -344,12 +408,8 @@ export default function App() {
                 min={4} max={30} onChange={e => setNumWorkers(Number(e.target.value))}
                 disabled={running} />
             </div>
-            <div className="form-row">
-              <label className="form-label"><CalendarIcon size={14} /> Days</label>
-              <input type="number" className="form-input" value={numDays}
-                min={7} max={31} onChange={e => setNumDays(Number(e.target.value))}
-                disabled={running} />
-            </div>
+
+            <WorkersAvatarGroup count={numWorkers} />
           </div>
           
           <button
@@ -359,7 +419,7 @@ export default function App() {
           >
             {running
               ? <><LoaderIcon size={16} className="spin" /> Generating...</>
-              : <><PlayIcon size={16} fill="currentColor" /> {anyDone ? 'Run Again' : 'Start Agent Pipeline'}</>
+              : <><PlayIcon size={16} fill="currentColor" /> {anyDone ? 'Run Again' : 'Start'}</>
             }
           </button>
         </section>
