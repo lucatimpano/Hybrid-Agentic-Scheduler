@@ -3,3 +3,5 @@ ortools
 python-dotenv
 langchain
 langchain-google-genai
+fpdf2
+pypdf
