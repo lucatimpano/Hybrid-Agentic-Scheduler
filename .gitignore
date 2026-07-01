@@ -54,3 +54,6 @@ docs/
 .vscode/
 *.swp
 *.swo
+
+# Scripts generatori temporanei
+scripts/
