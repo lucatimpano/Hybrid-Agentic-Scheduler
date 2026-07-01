@@ -129,11 +129,13 @@ class SmartSchedulerWrapper:
         # Imposto un range più ampio per supportare pesi multipli e penalità
         self.min_satisfaction = self.model.NewIntVar(-1000, 1000, "min_sat")
         start_date = datetime.strptime(SCHEDULE_START, "%Y-%m-%d")
+        
+        workers_dict = preferences_dict.get("workers", preferences_dict)
 
         for w in range(self.num_workers):
             worker_id = f"ID_{w}"
             # Estraiamo in modo sicuro le preferenze del medico
-            worker_prefs = preferences_dict.get(worker_id, {})
+            worker_prefs = workers_dict.get(worker_id, {})
             weights = worker_prefs.get("shift_weights", [0, 0, 0])
             soft_constraints = worker_prefs.get("soft_constraints", [])
             

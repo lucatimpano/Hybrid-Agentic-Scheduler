@@ -107,7 +107,8 @@ class VerificationAgent:
                     violations.append(f"{w_id} supera 36 ore nella finestra dal giorno {start_d} al {start_d+6} ({rolling_sum} turni standard).")
                     
         # 5. Verifica Hard Constraints personali
-        for w_id, prefs in preferences.items():
+        workers_dict = preferences.get("workers", preferences)
+        for w_id, prefs in workers_dict.items():
             if w_id not in worker_schedule:
                 continue
             for hc in prefs.get("hard_constraints", []):
@@ -117,7 +118,14 @@ class VerificationAgent:
                     if day_idx is not None and len(worker_schedule[w_id][day_idx]) > 0:
                         violations.append(f"Violato hard constraint free_date: {w_id} lavora il {date_val}.")
                 
-                # Si possono aggiungere logiche per free_weekday e altri hard constraints qui...
+                elif hc.get("type") == "free_weekday":
+                    weekday_val = hc.get("value")
+                    for date_str, d_idx in date_to_index.items():
+                        # Controllo se il giorno della settimana corrisponde al giorno libero richiesto
+                        date_obj = start_date + timedelta(days=d_idx)
+                        if date_obj.strftime("%A") == weekday_val:
+                            if len(worker_schedule[w_id][d_idx]) > 0:
+                                violations.append(f"Violato hard constraint free_weekday: {w_id} lavora di {weekday_val} ({date_str}).")
 
         return {
             "is_valid": len(violations) == 0,

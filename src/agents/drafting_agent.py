@@ -73,9 +73,10 @@ class DraftingAgent:
             # Coverage constraint (Case A: standard only, Case B: with specialists)
             print("  Applying shift coverage constraints...")
             if runtime.context.has_specialist:
+                workers_dict = runtime.context.preferences.get("workers", runtime.context.preferences)
                 worker_roles = {
                     w_id: p.get("role", "standard")
-                    for w_id, p in runtime.context.preferences.items()
+                    for w_id, p in workers_dict.items()
                 }
                 wrapper.add_specialist_coverage_constraint(worker_roles)
             else:
@@ -83,7 +84,8 @@ class DraftingAgent:
 
             # Personal hard constraints (fixed days off, weekday restrictions)
             print("  Applying personal hard constraints (days off, vacations)...")
-            for worker_id, data in runtime.context.preferences.items():
+            workers_dict = runtime.context.preferences.get("workers", runtime.context.preferences)
+            for worker_id, data in workers_dict.items():
                 for hc in data.get("hard_constraints", []):
                     if hc.get("type") == "free_date":
                         wrapper.add_hard_constraint_free_date(worker_id, hc.get("value"))
@@ -132,7 +134,8 @@ class DraftingAgent:
           - num_days           : int
           - num_shifts         : int
         """
-        for worker_id, data in preferences.items():
+        workers_dict = preferences.get("workers", preferences)
+        for worker_id, data in workers_dict.items():
             try:
                 worker_idx = int(worker_id.split("_")[1])
             except (IndexError, ValueError):
@@ -166,7 +169,10 @@ class DraftingAgent:
                         ("system", prompts.CUSTOM_CONSTRAINT_SYSTEM),
                         ("human", prompts.custom_constraint_user(worker_idx, natural_language, weight))
                     ])
-                    generated_code = response.content.strip()
+                    content = response.content
+                    if isinstance(content, list):
+                        content = content[0].get("text", str(content)) if isinstance(content[0], dict) else str(content[0])
+                    generated_code = content.strip()
 
                     # Register the generated code in the wrapper.
                     # It will be executed inside maximize_fairness_objective at the right moment.
@@ -225,9 +231,10 @@ class DraftingAgent:
         objective toward a fairer outcome for them.
         """
         boosted_prefs = copy.deepcopy(preferences)
+        workers_dict = boosted_prefs.get("workers", boosted_prefs)
 
-        if worst_worker in boosted_prefs:
-            worker_data = boosted_prefs[worst_worker]
+        if worst_worker in workers_dict:
+            worker_data = workers_dict[worst_worker]
 
             if "shift_weights" in worker_data:
                 worker_data["shift_weights"] = [w * 2 for w in worker_data["shift_weights"]]

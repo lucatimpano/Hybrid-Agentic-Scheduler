@@ -115,7 +115,13 @@ class SoftConstraint(BaseModel):
         "avoid_shift_date",
         "max_shifts_per_week",
         "avoid_afternoon_and_night_same_week",
+        "custom",
     ]
+
+    natural_language: str | None = Field(
+        default=None,
+        description="Testo libero in linguaggio naturale per spiegare il vincolo custom al DraftingAgent."
+    )
 
     value: str | int | None = Field(
         default=None,
