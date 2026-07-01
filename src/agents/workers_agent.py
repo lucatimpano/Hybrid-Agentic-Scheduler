@@ -1,61 +1,7 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
-from pydantic import BaseModel, Field
-from typing import Literal, List, Dict, Optional
-
-# MODELLI PYDANTIC (Il Contratto Dati)
-
-class HardConstraint(BaseModel):
-    type: Literal["free_date", "free_weekday"] = Field(
-        ..., description="Tipo di vincolo rigido: 'free_date' per data singola, 'free_weekday' per giorno della settimana fisso."
-    )
-    value: str = Field(
-        ..., description="Il valore del vincolo. Es: '2026-12-25' per free_date, oppure 'Monday' per free_weekday."
-    )
-    description: str = Field(
-        ..., description="La motivazione o descrizione testuale originale fornita dal lavoratore."
-    )
-
-class SoftConstraint(BaseModel):
-    type: Literal[
-        "free_date", "free_weekday", "work_weekday",
-        "avoid_shift_date", "max_shifts_per_week",
-        "avoid_afternoon_and_night_same_week"
-    ] = Field(..., description="Tipo di preferenza flessibile.")
-    value: Optional[str] = Field(
-        None, description="Valore associato (es. data '2026-12-31' o giorno della settimana 'Sunday')."
-    )
-    shift: Optional[Literal["Morning", "Afternoon", "Night"]] = Field(
-        None, description="Turno specifico da evitare o cercare, se applicabile."
-    )
-    weight: int = Field(
-        ..., ge=-10, le=10, 
-        description="Peso della preferenza: positivo (da 1 a 10) se desiderato, negativo (da -10 a -1) se da evitare."
-    )
-    description: str = Field(
-        ..., description="Descrizione testuale originale della preferenza flessibile."
-    )
-
-class WorkerPreferences(BaseModel):
-    role: Literal["standard", "specialist"] = Field(
-        "standard", description="Ruolo del lavoratore. Default è 'standard'."
-    )
-    shift_weights: List[int] = Field(
-        ..., min_length=3, max_length=3,
-        description="Lista di esattamente 3 interi con i pesi per [Morning, Afternoon, Night] da -10 a +10."
-    )
-    hard_constraints: List[HardConstraint] = Field(
-        default_factory=list, description="Lista dei vincoli rigidi e inderogabili."
-    )
-    soft_constraints: List[SoftConstraint] = Field(
-        default_factory=list, description="Lista delle preferenze soft e flessibili."
-    )
-
-class AllPreferences(BaseModel):
-    workers: Dict[str, WorkerPreferences] = Field(
-        ..., description="Dizionario con chiave l'ID del lavoratore (es. 'ID_0') e valore le sue preferenze."
-    )
-
+# Importiamo AllPreferences direttamente dal file centrale schemas.py
+from src.models.schemas import AllPreferences
 
 # IMPLEMENTAZIONE AGENTE (WorkersAgent)
 
@@ -65,10 +11,10 @@ class WorkersAgent:
     Utilizza il modello Gemini per convertire testo naturale in strutture Pydantic validate.
     """
     def __init__(self):
-        # Modello reale ed esistente
-        self.llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0) 
+        # Inizializzazione del modello LLM (Gemini) con temperatura deterministica
+        self.llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash", temperature=0) 
         
-        # System prompt con parentesi graffe raddoppiate {{ }} negli esempi JSON per evitare errori di f-string
+        # System prompt ottimizzato con le istruzioni e gli schemi corretti
         self.prompt = ChatPromptTemplate.from_messages([
             ("system", (
                 "You are an agent for decomposing and parsing worker preferences (Phase 1).\n"
@@ -118,7 +64,7 @@ class WorkersAgent:
                 "      ],\n"
                 "      'soft_constraints': [\n"
                 "        {{'type': 'avoid_afternoon_and_night_same_week', 'value': None, 'shift': None, 'weight': -7, 'description': 'Avoid afternoon-night combinations in the same week'}},\n"
-                "        {{'type': 'max_shifts_per_week', 'value': '2', 'shift': None, 'weight': -6, 'description': 'Maximum 2 shifts per week'}}\n"
+                "        {{'type': 'max_shifts_per_week', 'value': 2, 'shift': None, 'weight': -6, 'description': 'Maximum 2 shifts per week'}}\n"
                 "      ]\n"
                 "    }}\n"
                 "  }}\n"
@@ -151,7 +97,8 @@ class WorkersAgent:
             
         try:
             result = self.chain.invoke({"text": text}) 
-            return result.model_dump()["workers"] 
+            return result.model_dump()
         except Exception as e:
             print(f"Errore critico durante il parsing del WorkersAgent: {e}")
-            return {}
+            
+            raise e
