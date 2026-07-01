@@ -1,9 +1,10 @@
 import { useState, useRef, useCallback } from 'react'
 import {
   CheckIcon, LoaderIcon, CircleIcon, CalendarIcon,
-  UsersIcon, ChevronDownIcon, RotateCcwIcon, AlertCircleIcon
+  UsersIcon, ChevronDownIcon, RotateCcwIcon, AlertCircleIcon, PlayIcon
 } from 'lucide-react'
 import './App.css'
+import BlurText from './BlurText'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -15,7 +16,7 @@ interface AgentState {
   label: string
   description: string
   status: AgentStatus
-  runs: number          // how many times this agent was invoked
+  runs: number
   detail?: string
 }
 
@@ -41,18 +42,15 @@ function generateMockSchedule(numWorkers: number, numDays: number): Schedule {
   const start = new Date('2026-12-07')
   const assignments: Assignment[] = []
 
-  // Simple round-robin: each day assign 2 workers per shift
   for (let d = 0; d < numDays; d++) {
     const date = new Date(start)
     date.setDate(start.getDate() + d)
     const dateStr = date.toISOString().split('T')[0]
 
     for (const shift of shifts) {
-      // Pick 2 workers per shift, rotated
       const base = (d * 3 + shifts.indexOf(shift) * 5) % numWorkers
       for (let i = 0; i < 2; i++) {
         const wid = `ID_${(base + i) % numWorkers}`
-        // Skip if worker already has a shift today
         if (!assignments.find(a => a.date === dateStr && a.worker_id === wid)) {
           assignments.push({ date: dateStr, shift, worker_id: wid })
         }
@@ -63,7 +61,7 @@ function generateMockSchedule(numWorkers: number, numDays: number): Schedule {
 }
 
 // ─── Graph simulation script ───────────────────────────────────────────────
-// Each step: [delay_ms, agent, event, message]
+
 type SimStep = [number, AgentId, 'start' | 'done' | 'error' | 'redirect', string]
 
 const SIM_SCRIPT: SimStep[] = [
@@ -112,73 +110,56 @@ function makeInitialAgents(): AgentState[] {
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 function StatusIcon({ status }: { status: AgentStatus }) {
-  if (status === 'done')    return <CheckIcon size={13} strokeWidth={2.5} />
-  if (status === 'running') return <LoaderIcon size={13} className="spin" />
-  if (status === 'error')   return <AlertCircleIcon size={13} />
-  return <CircleIcon size={13} strokeWidth={1.5} />
-}
-
-function AgentStepper({ agents }: { agents: AgentState[] }) {
-  return (
-    <div className="stepper">
-      {agents.map((agent, i) => (
-        <div key={agent.id} className={`stepper-item stepper-item--${agent.status}`}>
-          {i < agents.length - 1 && (
-            <div className={`stepper-line ${agents[i + 1].status !== 'idle' ? 'stepper-line--active' : ''}`} />
-          )}
-
-          <div className="stepper-icon">
-            <StatusIcon status={agent.status} />
-          </div>
-
-          <div className="stepper-content">
-            <div className="stepper-label-row">
-              <span className="stepper-label">{agent.label}</span>
-              {agent.runs > 1 && (
-                <span className="run-badge">
-                  <RotateCcwIcon size={9} /> run {agent.runs}
-                </span>
-              )}
-            </div>
-            <span className="stepper-desc">{agent.description}</span>
-            {agent.detail && (
-              <span className={`stepper-detail ${agent.status === 'error' ? 'stepper-detail--error' : ''}`}>
-                {agent.detail}
-              </span>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function ExecutionLog({ entries }: { entries: LogEntry[] }) {
-  const endRef = useRef<HTMLDivElement>(null)
-
-  return (
-    <div className="exec-log">
-      <p className="section-label">Execution Log</p>
-      <div className="log-entries">
-        {entries.length === 0 && (
-          <span className="log-empty">No events yet.</span>
-        )}
-        {entries.map((e, i) => (
-          <div key={i} className={`log-entry log-entry--${e.type}`}>
-            <span className="log-ts">{formatTs(e.ts)}</span>
-            <span className="log-agent">{AGENT_META[e.agent].label}</span>
-            <span className="log-msg">{e.message}</span>
-          </div>
-        ))}
-        <div ref={endRef} />
-      </div>
-    </div>
-  )
+  if (status === 'done')    return <CheckIcon size={16} strokeWidth={2.5} />
+  if (status === 'running') return <LoaderIcon size={16} className="spin" />
+  if (status === 'error')   return <AlertCircleIcon size={16} />
+  return <CircleIcon size={16} strokeWidth={1.5} />
 }
 
 function formatTs(ts: number) {
   const d = new Date(ts)
   return `${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}.${String(d.getMilliseconds()).padStart(3,'0').slice(0,2)}`
+}
+
+function AgentNode({ agent, logs, isLast }: { agent: AgentState, logs: LogEntry[], isLast: boolean }) {
+  if (agent.status === 'idle') return null;
+
+  return (
+    <div className="agent-node">
+      <div className={`agent-node-icon status-${agent.status}`}>
+        <StatusIcon status={agent.status} />
+      </div>
+      
+      {!isLast && <div className={`agent-node-line ${agent.status === 'done' ? 'line-done' : ''}`} />}
+
+      <div className="agent-node-content">
+        <div className="agent-node-header">
+          <h3 className="agent-label">{agent.label}</h3>
+          {agent.runs > 1 && (
+            <span className="run-badge">
+              <RotateCcwIcon size={10} /> run {agent.runs}
+            </span>
+          )}
+        </div>
+        <p className="agent-desc">{agent.description}</p>
+        
+        <div className="agent-logs">
+          {logs.map((log, i) => (
+            <div key={i} className={`log-entry type-${log.type}`}>
+              <span className="log-ts">{formatTs(log.ts)}</span>
+              <BlurText
+                text={log.message}
+                delay={20}
+                animateBy="words"
+                direction="top"
+                className="log-message"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function ScheduleGrid({ schedule, numDays }: { schedule: Schedule; numDays: number }) {
@@ -209,48 +190,55 @@ function ScheduleGrid({ schedule, numDays }: { schedule: Schedule; numDays: numb
   }
 
   return (
-    <div className="schedule-wrap">
-      <div className="schedule-header">
-        <div className="schedule-worker-col" />
-        {days.map(d => <div key={d} className="schedule-day-label">{d + 1}</div>)}
-        <div className="schedule-totals-col">Tot</div>
+    <div className="schedule-wrap panel">
+      <div style={{ padding: '16px 20px 0' }}>
+        <p className="section-label">
+          Generated Schedule — {schedule.assignments.length} assignments · {workers.length} workers · {numDays} days
+        </p>
       </div>
-
-      {workers.map(w => (
-        <div
-          key={w}
-          className="schedule-row"
-          onClick={() => setExpanded(expanded === w ? null : w)}
-        >
-          <div className="schedule-worker-col">
-            <span className="worker-id">{w}</span>
-            <ChevronDownIcon size={10} className={`chevron ${expanded === w ? 'chevron--open' : ''}`} />
-          </div>
-
-          {days.map(d => {
-            const shift = byWorker[w]?.[d]
-            return (
-              <div key={d} className="schedule-cell">
-                {shift
-                  ? <span className="shift-dot" style={{ color: SHIFT_COLORS[shift] }} title={shift}>{SHIFT_LABEL[shift]}</span>
-                  : <span className="shift-empty">·</span>
-                }
-              </div>
-            )
-          })}
-
-          <div className="schedule-totals-col schedule-totals-data">
-            <span style={{ color: SHIFT_COLORS.Morning }}>{totals[w].M}M</span>{' '}
-            <span style={{ color: SHIFT_COLORS.Afternoon }}>{totals[w].A}A</span>{' '}
-            <span style={{ color: SHIFT_COLORS.Night }}>{totals[w].N}N</span>
-          </div>
+      <div className="schedule-grid-inner">
+        <div className="schedule-header">
+          <div className="schedule-worker-col" />
+          {days.map(d => <div key={d} className="schedule-day-label">{d + 1}</div>)}
+          <div className="schedule-totals-col">Tot</div>
         </div>
-      ))}
 
-      <div className="schedule-legend">
-        {(['Morning', 'Afternoon', 'Night'] as const).map(s => (
-          <span key={s} style={{ color: SHIFT_COLORS[s] }}>{SHIFT_LABEL[s]} = {s}</span>
+        {workers.map(w => (
+          <div
+            key={w}
+            className="schedule-row"
+            onClick={() => setExpanded(expanded === w ? null : w)}
+          >
+            <div className="schedule-worker-col">
+              <span className="worker-id">{w}</span>
+              <ChevronDownIcon size={10} className={`chevron ${expanded === w ? 'chevron--open' : ''}`} />
+            </div>
+
+            {days.map(d => {
+              const shift = byWorker[w]?.[d]
+              return (
+                <div key={d} className="schedule-cell">
+                  {shift
+                    ? <span className="shift-dot" style={{ color: SHIFT_COLORS[shift] }} title={shift}>{SHIFT_LABEL[shift]}</span>
+                    : <span className="shift-empty">·</span>
+                  }
+                </div>
+              )
+            })}
+
+            <div className="schedule-totals-col schedule-totals-data">
+              <span style={{ color: SHIFT_COLORS.Morning }}>{totals[w].M}M</span>{' '}
+              <span style={{ color: SHIFT_COLORS.Afternoon }}>{totals[w].A}A</span>{' '}
+              <span style={{ color: SHIFT_COLORS.Night }}>{totals[w].N}N</span>
+            </div>
+          </div>
         ))}
+
+        <div className="schedule-legend">
+          {(['Morning', 'Afternoon', 'Night'] as const).map(s => (
+            <span key={s} style={{ color: SHIFT_COLORS[s] }}>{SHIFT_LABEL[s]} = {s}</span>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -298,10 +286,9 @@ export default function App() {
         if (type === 'start') {
           updateAgent(agent, {
             status: 'running',
-            runs: 0,          // will be incremented below
+            runs: 0,
             detail: undefined,
           })
-          // increment run count separately so it stacks correctly
           setAgents(prev => prev.map(a =>
             a.id === agent ? { ...a, status: 'running', runs: a.runs + 1 } : a
           ))
@@ -310,13 +297,11 @@ export default function App() {
         } else if (type === 'error') {
           updateAgent(agent, { status: 'error', detail: message })
         }
-        // 'redirect' entries only go to the log
       }, elapsed)
 
       timeoutsRef.current.push(t)
     }
 
-    // Final: emit schedule
     const totalElapsed = elapsed + 800
     const finalT = setTimeout(() => {
       setSchedule(generateMockSchedule(numWorkers, numDays))
@@ -326,11 +311,13 @@ export default function App() {
   }
 
   const anyDone = agents.some(a => a.status !== 'idle')
-  const doneCount = agents.filter(a => a.status === 'done').length
+
+  // Identify the last non-idle agent to not render the connecting line for it
+  const activeAgents = agents.filter(a => a.status !== 'idle');
 
   return (
     <main>
-      <div className="container">
+      <div className="container centered-layout">
 
         {/* ── Header ── */}
         <header className="page-header">
@@ -345,91 +332,66 @@ export default function App() {
             <span className="tag">OR-Tools</span>
             <span className="tag">CP-SAT</span>
             <span className="tag">RAG</span>
-            <span className="tag">Neuro-Symbolic</span>
           </div>
         </header>
 
-        <div className="layout">
-
-          {/* ── Left: config + stepper ── */}
-          <aside className="panel panel--left">
-
-            <section className="section">
-              <p className="section-label">Configuration</p>
-              <div className="form-row">
-                <label className="form-label"><UsersIcon size={12} /> Workers</label>
-                <input type="number" className="form-input" value={numWorkers}
-                  min={4} max={30} onChange={e => setNumWorkers(Number(e.target.value))}
-                  disabled={running} />
-              </div>
-              <div className="form-row">
-                <label className="form-label"><CalendarIcon size={12} /> Days</label>
-                <input type="number" className="form-input" value={numDays}
-                  min={7} max={31} onChange={e => setNumDays(Number(e.target.value))}
-                  disabled={running} />
-              </div>
-            </section>
-
-            <div className="divider" />
-
-            <section className="section">
-              <p className="section-label">Agent Pipeline</p>
-              <AgentStepper agents={agents} />
-            </section>
-
-            <div className="divider" />
-
-            {/* Progress indicator */}
-            {anyDone && (
-              <div className="progress-wrap">
-                <div className="progress-bar" style={{ width: `${(doneCount / 4) * 100}%` }} />
-              </div>
-            )}
-
-            <button
-              className={`run-btn ${running ? 'run-btn--loading' : ''}`}
-              onClick={runSimulation}
-              disabled={running}
-            >
-              {running
-                ? <><LoaderIcon size={13} className="spin" /> Running…</>
-                : anyDone ? 'Run Again' : 'Generate Schedule'
-              }
-            </button>
-
-          </aside>
-
-          {/* ── Right: log + schedule ── */}
-          <div className="right-col">
-
-            {/* Execution log */}
-            <div className="panel">
-              <ExecutionLog entries={log} />
+        {/* ── Configuration & Controls ── */}
+        <section className="config-panel">
+          <div className="config-inputs">
+            <div className="form-row">
+              <label className="form-label"><UsersIcon size={14} /> Workers</label>
+              <input type="number" className="form-input" value={numWorkers}
+                min={4} max={30} onChange={e => setNumWorkers(Number(e.target.value))}
+                disabled={running} />
             </div>
-
-            {/* Schedule grid */}
-            {schedule && (
-              <div className="panel">
-                <div style={{ padding: '16px 20px 0' }}>
-                  <p className="section-label">
-                    Generated Schedule — {schedule.assignments.length} assignments · {numWorkers} workers · {numDays} days
-                  </p>
-                </div>
-                <ScheduleGrid schedule={schedule} numDays={numDays} />
-              </div>
-            )}
-
-            {!schedule && !running && !anyDone && (
-              <div className="panel">
-                <div className="empty-state">
-                  <CalendarIcon size={22} className="empty-icon" />
-                  <p>Configure and run the scheduler to see the generated timetable.</p>
-                </div>
-              </div>
-            )}
-
+            <div className="form-row">
+              <label className="form-label"><CalendarIcon size={14} /> Days</label>
+              <input type="number" className="form-input" value={numDays}
+                min={7} max={31} onChange={e => setNumDays(Number(e.target.value))}
+                disabled={running} />
+            </div>
           </div>
-        </div>
+          
+          <button
+            className={`run-btn ${running ? 'run-btn--loading' : ''}`}
+            onClick={runSimulation}
+            disabled={running}
+          >
+            {running
+              ? <><LoaderIcon size={16} className="spin" /> Generating...</>
+              : <><PlayIcon size={16} fill="currentColor" /> {anyDone ? 'Run Again' : 'Start Agent Pipeline'}</>
+            }
+          </button>
+        </section>
+
+        {/* ── Central Pipeline ── */}
+        <section className="pipeline-section">
+          {activeAgents.length === 0 && !running && (
+             <div className="empty-state">
+                <CalendarIcon size={32} className="empty-icon" />
+                <p>Click start to watch the agents optimize the schedule in real-time.</p>
+             </div>
+          )}
+          
+          <div className="agents-flow">
+            {activeAgents.map((agent, index) => (
+              <AgentNode 
+                key={agent.id + agent.runs} 
+                agent={agent} 
+                logs={log.filter(l => l.agent === agent.id)} 
+                isLast={index === activeAgents.length - 1}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* ── Schedule grid ── */}
+        {schedule && (
+          <section className="schedule-section">
+            <BlurText text="Optimization Complete!" delay={50} className="success-title" direction="bottom" />
+            <ScheduleGrid schedule={schedule} numDays={numDays} />
+          </section>
+        )}
 
         {/* ── Footer ── */}
         <footer className="page-footer">
