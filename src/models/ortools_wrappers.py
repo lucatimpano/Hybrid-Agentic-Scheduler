@@ -27,6 +27,12 @@ class SmartSchedulerWrapper:
         
         # Inizializzo il dizionario per i ruoli dei lavoratori (utile per il Caso B)
         self.worker_roles = {}
+
+        # Registro per i soft constraint custom generati dinamicamente dal DraftingAgent.
+        # Struttura: { worker_idx (int): ["codice_python_str_1", "codice_python_str_2", ...] }
+        # Ogni stringa viene eseguita con exec() dentro maximize_fairness_objective,
+        # nel contesto corretto in cui satisfaction_terms è disponibile.
+        self.custom_soft_terms: dict[int, list[str]] = {}
         
         #Inzializzo il dizionario vuoto per definire i turni
         self.x = {}
@@ -243,6 +249,24 @@ class SmartSchedulerWrapper:
                         
                         # Sottraiamo il peso se li fa entrambi
                         satisfaction_terms.append(has_both * (-weight))
+
+            # --- SOFT CONSTRAINT CUSTOM (generati dinamicamente dall'AI nel DraftingAgent) ---
+            # Eseguiamo i codici registrati per questo worker nel contesto corretto.
+            # Il codice generato ha accesso a: satisfaction_terms, w, self (wrapper), model, x
+            for custom_code in self.custom_soft_terms.get(w, []):
+                try:
+                    exec(custom_code, {
+                        "satisfaction_terms": satisfaction_terms,
+                        "w": w,
+                        "self": self,
+                        "model": self.model,
+                        "x": self.x,
+                        "num_days": self.num_days,
+                        "num_shifts": self.num_shifts,
+                    })
+                except Exception as e:
+                    print(f"[WARN] Soft constraint custom per worker {w} fallito e ignorato: {e}")
+            # ---------------------------------------------------------------------------
 
             # Garantiamo che il punteggio del medico sia maggiore o uguale al punteggio minimo globale
             self.model.Add(sum(satisfaction_terms) >= self.min_satisfaction)
