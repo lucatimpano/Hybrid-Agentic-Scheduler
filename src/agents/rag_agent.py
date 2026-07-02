@@ -8,6 +8,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGener
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain.tools import tool
 from langchain.agents import create_agent
+from langchain_ollama import ChatOllama
 
 import src.agents.prompts as prompts
 
@@ -47,7 +48,8 @@ class RagAgent:
         self.retrieve_tool = retrieve_context
         
         # 4. Inizializza il ReAct Agent di LangGraph
-        self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)      # cambiare a 3.5 flash
+        # self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)      # cambiare a 3.5 flash
+        self.llm = ChatOllama(model="qwen3.5:0.8b", temperature=0)
         self.agent = create_agent(
             self.llm,
             tools=[self.retrieve_tool],
@@ -84,6 +86,16 @@ class RagAgent:
                 ("user", f"Verify the compliance of these worker preferences:\n\n{preferences_json}")
             ]
         })
+        
+        # Stampa i passaggi intermedi dell'agente per visualizzare il ragionamento e le chiamate ai tool
+        print("\n=== PASSAGGI DELL'AGENTE (REASONING & TOOLS) ===")
+        for msg in response["messages"]:
+            role = "USER" if msg.type == "human" else "AI"
+            print(f"\n[{role}]:")
+            print(msg.content)
+            if hasattr(msg, "tool_calls") and msg.tool_calls:
+                print(f"-> Chiamata Tool: {msg.tool_calls}")
+        print("================================================\n")
         
         # Estraiamo la risposta finale
         last_message = response["messages"][-1].content
@@ -127,14 +139,6 @@ if __name__ == "__main__":
     # - ID_2: Vicedirettore con più di 1 turno di notte a settimana (viola Art 5.1)
     test_preferences = {
         "workers": {
-            "ID_0": {
-                "role": "standard",
-                "shift_weights": [8, 0, -5],
-                "hard_constraints": [
-                    {"type": "free_date", "value": "2026-12-25", "description": "Natale a casa"}
-                ],
-                "soft_constraints": []
-            },
             "ID_1": {
                 "role": "standard",
                 "shift_weights": [0, 0, 0],
@@ -143,19 +147,6 @@ if __name__ == "__main__":
                     {"type": "free_date", "value": "2027-01-01", "description": "Giorno di Capodanno libero"}
                 ],
                 "soft_constraints": []
-            },
-            "ID_2": {
-                "role": "vicedirettore",  # Ruolo speciale citato nel regolamento
-                "shift_weights": [0, 0, 8],
-                "hard_constraints": [],
-                "soft_constraints": [
-                    {
-                        "type": "custom",
-                        "natural_language": "Voglio fare turni notturni (Night) sia il lunedì che il mercoledì di ogni settimana",
-                        "weight": 8,
-                        "description": "Due notti a settimana"
-                    }
-                ]
             }
         }
     }
