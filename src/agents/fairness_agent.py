@@ -78,7 +78,7 @@ class FairnessAgent:
         shifts_by_week = defaultdict(list)
         for a in worker_assignments:
             dt = datetime.strptime(a.date, "%Y-%m-%d")
-            # FIX LUCA: Estraiamo anno e numero settimana per evitare collisioni interannuali
+            # Estraiamo anno e numero settimana per evitare collisioni interannuali
             year, week_number, _ = dt.isocalendar()
             shifts_by_week[(year, week_number)].append(a.shift)
         # Penalità e Premi sui Vincoli Flessibili (Soft Constraints)
