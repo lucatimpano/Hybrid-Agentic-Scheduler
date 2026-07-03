@@ -1,17 +1,11 @@
-from datetime import datetime
 from langgraph.graph import StateGraph, START, END
 
-from src.models.schemas import SchedulerState, SCHEDULE_START, SCHEDULE_END
+from src.models.schemas import SchedulerState, NUM_DAYS
 from src.agents.workers_agent import WorkersAgent
 from src.agents.rag_agent import RagAgent
 from src.agents.drafting_agent import DraftingAgent
 from src.agents.verification_agent import VerificationAgent
 from src.agents.fairness_agent import FairnessAgent
-
-# Calcoliamo NUM_DAYS a partire dalle date definite in schemas.py
-start_dt = datetime.strptime(SCHEDULE_START, "%Y-%m-%d")
-end_dt = datetime.strptime(SCHEDULE_END, "%Y-%m-%d")
-NUM_DAYS = (end_dt - start_dt).days + 1
 
 # Inizializzazione globale degli agenti (una sola volta)
 workers_agent = WorkersAgent()

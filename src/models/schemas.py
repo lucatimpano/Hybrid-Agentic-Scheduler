@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 
 SCHEDULE_START = "2026-12-07"   # Primo giorno della turnazione
 SCHEDULE_END   = "2027-01-06"   # Ultimo giorno della turnazione
+NUM_DAYS       = 31             # Numero di giorni totali della turnazione
 
 # Turni supportati e relative ore (in ordine: Morning, Afternoon, Night)
 SHIFT_TYPES: list[str] = ["Morning", "Afternoon", "Night"]
