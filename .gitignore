@@ -1,6 +1,7 @@
 # User specific
 test.py
 test_workers.py
+RELAZIONE.md
 # API Keys and Environment Variables
 .env
 .env.local
