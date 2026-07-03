@@ -16,11 +16,10 @@ dotenv.load_dotenv()
 
 class RagAgent:
     """
-    RAG Agent responsible for institutional compliance validation (Phase 1.5).
-    It checks parsed worker preferences against hospital regulations PDF using an autonomous LLM ReAct agent.
+    RAG Agent responsible for institutional compliance validation.
+    It evaluates custom soft constraints to check if they violate hospital rules.
     """
     def __init__(self, pdf_path: str = "data/input/regolamento_ospedaliero.pdf"):
-        # 1. Carica e splitta il PDF del regolamento
         docs = self._load_documents(pdf_path)
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
@@ -29,12 +28,10 @@ class RagAgent:
         )
         all_splits = text_splitter.split_documents(docs)
         
-        # 2. Inizializza il Vector Store con gli embedding di Gemini
         embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2")
         self.vector_store = InMemoryVectorStore(embeddings)
         self.vector_store.add_documents(documents=all_splits)
         
-        # 3. Definisce il tool internamente per mantenere l'isolamento del vector store
         @tool
         def retrieve_context(query: str):
             """Retrieve relevant rules and articles from the hospital regulations PDF."""
@@ -47,9 +44,8 @@ class RagAgent:
             
         self.retrieve_tool = retrieve_context
         
-        # 4. Inizializza il ReAct Agent di LangGraph
-        # self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)      # cambiare a 3.5 flash
-        self.llm = ChatOllama(model="qwen3.5:0.8b", temperature=0)
+        self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)  # Cambiare per testare con Gemini 2.5/3.5 Flash
+        #self.llm = ChatOllama(model="qwen3.5:0.8b", temperature=0)
         self.agent = create_agent(
             self.llm,
             tools=[self.retrieve_tool],
@@ -74,20 +70,32 @@ class RagAgent:
 
     def verify_compliance(self, preferences: dict) -> dict:
         """
-        Verifica a batch la conformità delle preferenze dei medici rispetto al regolamento.
-        Ritorna un dizionario con il report di conformità strutturato.
+        Extracts custom constraints from preferences and verifies them against regulations.
+        Returns a dictionary with verdicts (approved true/false and reason).
         """
-        # Formattiamo le preferenze in JSON da passare all'agente
-        preferences_json = json.dumps(preferences, indent=2)
+        workers_dict = preferences.get("workers", preferences)
         
-        # Eseguiamo il ciclo ReAct dell'agente
+        custom_payload = {}
+        for worker_id, data in workers_dict.items():
+            custom_constraints = [
+                sc for sc in data.get("soft_constraints", [])
+                if sc.get("type") == "custom"
+            ]
+            if custom_constraints:
+                custom_payload[worker_id] = custom_constraints
+
+        if not custom_payload:
+            print("[RagAgent] Nessun vincolo custom trovato. Verifica saltata.")
+            return {"custom_constraint_verdicts": {}}
+
+        payload_json = json.dumps({"workers_custom_constraints": custom_payload}, indent=2)
+        
         response = self.agent.invoke({
             "messages": [
-                ("user", f"Verify the compliance of these worker preferences:\n\n{preferences_json}")
+                ("user", f"Evaluate the compliance of these custom constraints:\n\n{payload_json}")
             ]
         })
         
-        # Stampa i passaggi intermedi dell'agente per visualizzare il ragionamento e le chiamate ai tool
         print("\n=== PASSAGGI DELL'AGENTE (REASONING & TOOLS) ===")
         for msg in response["messages"]:
             role = "USER" if msg.type == "human" else "AI"
@@ -97,17 +105,13 @@ class RagAgent:
                 print(f"-> Chiamata Tool: {msg.tool_calls}")
         print("================================================\n")
         
-        # Estraiamo la risposta finale
         last_message = response["messages"][-1].content
-        
-        # content può essere una lista (testo + artefatti) o una stringa semplice
         if isinstance(last_message, list):
             last_message = " ".join(
                 part.get("text", "") if isinstance(part, dict) else str(part)
                 for part in last_message
             )
         
-        # Pulizia dell'output per rimuovere blocchi di codice markdown (es. ```json ... ```)
         clean_msg = last_message.strip()
         if clean_msg.startswith("```"):
             lines = clean_msg.split("\n")
@@ -123,30 +127,30 @@ class RagAgent:
             print(f"Errore di parsing JSON nella risposta dell'agente RAG: {e}")
             print(f"Risposta originale:\n{last_message}")
             return {
-                "compliance_report": {},
+                "custom_constraint_verdicts": {},
                 "error": "Risposta non in formato JSON valido",
                 "raw_response": last_message
             }
 
 if __name__ == "__main__":
-    # Test della classe RagAgent con casi di conformità ed violazioni di prova
     print("=== AVVIO AGENTE RAG COMPLIANCE ===")
     agent = RagAgent()
     
-    # Prepariamo un set di test per simulare le preferenze estratte da WorkersAgent:
-    # - ID_0: Conforme
-    # - ID_1: Viola la regola delle festività consecutive (Natale 25 Dic + Capodanno 1 Gen)
-    # - ID_2: Vicedirettore con più di 1 turno di notte a settimana (viola Art 5.1)
     test_preferences = {
         "workers": {
-            "ID_1": {
+            "ID_0": {
                 "role": "standard",
-                "shift_weights": [0, 0, 0],
-                "hard_constraints": [
-                    {"type": "free_date", "value": "2026-12-25", "description": "Giorno di Natale libero"},
-                    {"type": "free_date", "value": "2027-01-01", "description": "Giorno di Capodanno libero"}
-                ],
-                "soft_constraints": []
+                "hard_constraints": [],
+                "soft_constraints": [
+                    {
+                        "type": "custom",
+                        "value": None,
+                        "shift": None,
+                        "weight": -6,
+                        "natural_language": "Vorrei evitare di fare turni notturni se possibile.",
+                        "description": "Evitare notti"
+                    }
+                ]
             }
         }
     }
