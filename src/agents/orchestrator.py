@@ -18,9 +18,9 @@ fairness_agent = FairnessAgent()
 # NODI
 # -----------------------------------------------------------------------------
 
-def parse_node(state: SchedulerState):
+def worker_node(state: SchedulerState):
     """Estrae le preferenze dal testo libero usando WorkersAgent."""
-    print("-> [NODE] parse_node")
+    print("-> [NODE] worker_node")
     try:
         prefs = workers_agent.parse_preferences(state["preferences"])
         return {"preferences": prefs, "violations": [], "iteration": 0}
@@ -160,15 +160,15 @@ def decide_refinement(state: SchedulerState) -> str:
 def create_scheduler_graph():
     workflow = StateGraph(SchedulerState)
 
-    workflow.add_node("parse_node", parse_node)
+    workflow.add_node("worker_node", worker_node)
     workflow.add_node("rag_node", rag_node)
     workflow.add_node("draft_node", draft_node)
     workflow.add_node("verify_node", verify_node)
     workflow.add_node("fairness_node", fairness_node)
     workflow.add_node("refine_node", refine_node)
 
-    workflow.add_edge(START, "parse_node")
-    workflow.add_conditional_edges("parse_node", should_retry_parse)
+    workflow.add_edge(START, "worker_node")
+    workflow.add_conditional_edges("worker_node", should_retry_parse)
     workflow.add_conditional_edges("rag_node", should_retry_rag)
     workflow.add_edge("draft_node", "verify_node")
     workflow.add_conditional_edges("verify_node", check_verification)
