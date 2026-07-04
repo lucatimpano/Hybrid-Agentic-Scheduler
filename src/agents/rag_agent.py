@@ -44,7 +44,7 @@ class RagAgent:
             
         self.retrieve_tool = retrieve_context
         
-        self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)  # Cambiare per testare con Gemini 2.5/3.5 Flash
+        self.llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite", temperature=0)  # Modello aggiornato a Gemini 3.1 Flash Lite
         #self.llm = ChatOllama(model="qwen3.5:0.8b", temperature=0)
         self.agent = create_agent(
             self.llm,

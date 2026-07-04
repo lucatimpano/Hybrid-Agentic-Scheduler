@@ -322,4 +322,6 @@ class SchedulerState(TypedDict):
     fairness_scores: dict       # {"ID_0": 42, "ID_1": 38, ...}
     worst_worker   : str        # worker_id del lavoratore con punteggio minimo.
     prev_min_score : int        # Punteggio minimo dell'iterazione precedente.
+    fairness_gap   : int        # Differenza tra il medico con punteggio massimo e quello minimo.
     iteration      : int        # Contatore del ciclo di refinement.
+    error_count    : int        # Contatore dei tentativi falliti (per worker e rag node).

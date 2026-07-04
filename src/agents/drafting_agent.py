@@ -31,7 +31,8 @@ class DraftingAgent:
     # ------------------------------------------------------------------ #
 
     def __init__(self):
-        self.llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash", temperature=0)
+        self.llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite", temperature=0)
+        self.custom_constraints_cache = {}  # Cache: (worker_idx, natural_language_text) -> generated_code
 
     # ------------------------------------------------------------------ #
     #  PRIVATE: TOOL BUILDER                                               #
@@ -150,19 +151,25 @@ class DraftingAgent:
                 continue
 
             for sc in custom_constraints:
-                natural_language = sc.get("natural_language", "")
+                natural_language = sc.get("natural_language") or sc.get("description") or ""
                 weight = sc.get("weight", 1)
 
                 if not natural_language:
                     continue
 
-                print(f"  [CustomConstraint] Generating code for {worker_id}: '{natural_language}'")
+                cache_key = (worker_idx, natural_language)
+                if cache_key in self.custom_constraints_cache:
+                    generated_code = self.custom_constraints_cache[cache_key]
+                    print(f"  [CustomConstraint] Using cached code for {worker_id}: '{natural_language}'")
+                    print(f"  [CODE] BEGIN {worker_id} | {natural_language} | weight={weight} | cached")
+                    print(generated_code)
+                    print("  [CODE] END")
+                    # Prepende la definizione del peso corrente (potenzialmente raddoppiato)
+                    code_with_weight = f"weight = {weight}\n{generated_code}"
+                    wrapper.custom_soft_terms.setdefault(worker_idx, []).append(code_with_weight)
+                    continue
 
-                user_message = (
-                    f"Worker index: {worker_idx}\n"
-                    f"Preference (natural language): {natural_language}\n"
-                    f"Weight value: {weight}"
-                )
+                print(f"  [CustomConstraint] Generating code for {worker_id}: '{natural_language}'")
 
                 try:
                     response = self.llm.invoke([
@@ -171,13 +178,19 @@ class DraftingAgent:
                     ])
                     content = response.content
                     if isinstance(content, list):
-                        content = content[0].get("text", str(content)) if isinstance(content[0], dict) else str(content[0])
+                        content = content[0].get("text", str(content[0])) if isinstance(content[0], dict) else str(content[0])
                     generated_code = content.strip()
 
-                    # Register the generated code in the wrapper.
-                    # It will be executed inside maximize_fairness_objective at the right moment.
-                    wrapper.custom_soft_terms.setdefault(worker_idx, []).append(generated_code)
-                    print(f"  [CustomConstraint] Code registered for {worker_id}.")
+                    # Salva il codice generato grezzo (senza prefisso del peso) in cache
+                    self.custom_constraints_cache[cache_key] = generated_code
+
+                    # Registra il codice con il peso corrente prependato
+                    code_with_weight = f"weight = {weight}\n{generated_code}"
+                    wrapper.custom_soft_terms.setdefault(worker_idx, []).append(code_with_weight)
+                    print(f"  [CustomConstraint] Code registered and cached for {worker_id}.")
+                    print(f"  [CODE] BEGIN {worker_id} | {natural_language} | weight={weight}")
+                    print(generated_code)
+                    print("  [CODE] END")
 
                 except Exception as e:
                     print(f"  [WARN] Custom constraint generation for {worker_id} failed: {e}")

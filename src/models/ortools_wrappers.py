@@ -83,11 +83,12 @@ class SmartSchedulerWrapper:
     # Aggiungo il vincolo in cui un lavoratore non lavora dopo un turno di notte
     def add_no_work_after_night(self):
         for w in range(self.num_workers):
-            for d in range(self.num_days - REST_DAYS_AFTER_NIGHT):
+            for d in range(self.num_days):
                 notte = self.x[(w, d, 2)]
                 for offset in range(1, REST_DAYS_AFTER_NIGHT + 1):
-                    for s in range(self.num_shifts):
-                        self.model.Add(self.x[(w, d + offset, s)] == 0).OnlyEnforceIf(notte)
+                    if d + offset < self.num_days:
+                        for s in range(self.num_shifts):
+                            self.model.Add(self.x[(w, d + offset, s)] == 0).OnlyEnforceIf(notte)
 
     # Un lavoratore non può lavorare più delle ore massime settimanali in 7 giorni mobili
     def add_36_hours_a_week(self):

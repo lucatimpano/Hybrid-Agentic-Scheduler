@@ -1,3 +1,5 @@
+import copy
+import json
 from langgraph.graph import StateGraph, START, END
 
 from src.models.schemas import SchedulerState, NUM_DAYS
@@ -6,6 +8,8 @@ from src.agents.rag_agent import RagAgent
 from src.agents.drafting_agent import DraftingAgent
 from src.agents.verification_agent import VerificationAgent
 from src.agents.fairness_agent import FairnessAgent
+
+MAX_RETRIES = 3
 
 # Inizializzazione globale degli agenti (una sola volta)
 workers_agent = WorkersAgent()
@@ -23,9 +27,12 @@ def worker_node(state: SchedulerState):
     print("-> [NODE] worker_node")
     try:
         prefs = workers_agent.parse_preferences(state["preferences"])
-        return {"preferences": prefs, "violations": [], "iteration": 0}
+        # Successo: resetta error_count per la fase successiva
+        return {"preferences": prefs, "violations": [], "error_count": 0, "iteration": 0}
     except Exception as e:
-        return {"violations": [str(e)]}
+        count = state.get("error_count", 0) + 1
+        print(f"   [WORKER] Errore (tentativo {count}): {e}")
+        return {"violations": [str(e)], "error_count": count}
 
 
 def rag_node(state: SchedulerState):
@@ -35,8 +42,9 @@ def rag_node(state: SchedulerState):
     report = rag_agent.verify_compliance(prefs)
 
     if report.get("error"):
-        print(f"   [RAG] Errore LLM: {report['error']}")
-        return {}  # Lo stato non cambia, il bivio gestirà il retry
+        count = state.get("error_count", 0) + 1
+        print(f"   [RAG] Errore LLM (tentativo {count}): {report['error']}")
+        return {"violations": [report["error"]], "error_count": count}
 
     verdicts = report.get("custom_constraint_verdicts", {})
     workers_dict = prefs.get("workers", prefs)
@@ -49,18 +57,45 @@ def rag_node(state: SchedulerState):
             if sc.get("type") != "custom":
                 filtered.append(sc)
                 continue
+            
+            # Fallback se l'LLM ha salvato il testo in description invece di natural_language
+            if not sc.get("natural_language") and sc.get("description"):
+                sc["natural_language"] = sc["description"]
+
             # Controlliamo il verdetto del RAG per questo vincolo
-            approved = any(
-                v.get("natural_language") == sc.get("natural_language") and v.get("approved")
-                for v in verdicts.get(worker_id, [])
-            )
+            matched = None
+            for v in verdicts.get(worker_id, []):
+                v_text = v.get("natural_language") or v.get("description") or ""
+                sc_text = sc.get("natural_language") or sc.get("description") or ""
+                if v_text.strip() == sc_text.strip():
+                    matched = v
+                    break
+
+            approved = bool(matched.get("approved")) if matched else False
+            reason = matched.get("reason", "") if matched else ""
+            law = matched.get("law", "") if matched else ""
+
+            # Se la reason non cita esplicitamente la legge, la costruiamo noi
+            if not approved and law and law not in reason:
+                reason = f"Violates {law}: {reason}".strip(" :")
+
+            sc_text = sc.get("natural_language") or sc.get("description") or ""
+            verdict_payload = {
+                "event": "rag_verdict",
+                "worker_id": worker_id,
+                "natural_language": sc_text,
+                "approved": approved,
+                "reason": reason,
+                "law": law,
+            }
+            print(json.dumps(verdict_payload, ensure_ascii=False))
+
             if approved:
                 filtered.append(sc)
-            else:
-                print(f"   [RAG] Vincolo bocciato per {worker_id}: '{sc.get('natural_language')}'")
         data["soft_constraints"] = filtered
 
-    return {"preferences": prefs}
+    # Successo: resetta error_count per la fase successiva
+    return {"preferences": prefs, "violations": [], "error_count": 0}
 
 
 def draft_node(state: SchedulerState):
@@ -69,10 +104,27 @@ def draft_node(state: SchedulerState):
     prefs = state["preferences"]
     workers_dict = prefs.get("workers", prefs)
     num_workers = len(workers_dict)
-    has_specialist = any(w.get("role") == "specialist" for w in workers_dict.values())
 
-    schedule = drafting_agent.draft(prefs, num_workers=num_workers, num_days=NUM_DAYS, has_specialist=has_specialist)
-    return {"schedule": schedule, "violations": []}
+    has_specialist = False
+    for w in workers_dict.values():
+        if w.get("role") == "specialist":
+            has_specialist = True
+            break
+
+    try:
+        schedule = drafting_agent.draft(prefs, num_workers=num_workers, num_days=NUM_DAYS, has_specialist=has_specialist)
+    except Exception as e:
+        count = state.get("error_count", 0) + 1
+        print(f"   [DRAFT] Errore (tentativo {count}): {e}")
+        return {"violations": [str(e)], "error_count": count}
+
+    # Se il solver non trova una soluzione, è matematicamente impossibile
+    if not schedule.get("assignments"):
+        print("   [DRAFT] FATAL: Nessuna soluzione trovata (matematicamente impossibile).")
+        return {"violations": ["INFEASIBLE"], "error_count": MAX_RETRIES}
+
+    # Successo: resetta error_count per la fase successiva
+    return {"schedule": schedule, "violations": [], "error_count": 0}
 
 
 def verify_node(state: SchedulerState):
@@ -80,16 +132,23 @@ def verify_node(state: SchedulerState):
     print("-> [NODE] verify_node")
     prefs = state["preferences"]
     workers_dict = prefs.get("workers", prefs)
-    has_specialist = any(w.get("role") == "specialist" for w in workers_dict.values())
+
+    has_specialist = False
+    for w in workers_dict.values():
+        if w.get("role") == "specialist":
+            has_specialist = True
+            break
 
     result = verification_agent.verify_schedule(
         state["schedule"], prefs, num_days=NUM_DAYS, has_specialist=has_specialist
     )
 
     if not result["is_valid"]:
-        print(f"   [VERIFY] Violazioni rilevate: {len(result['violations'])}")
+        print(f"   [VERIFY] FATAL: Violazioni deterministiche rilevate, impossibile risolvere.")
+        return {"violations": result["violations"], "error_count": MAX_RETRIES}
 
-    return {"violations": result["violations"]}
+    # Successo: resetta error_count per la fase successiva
+    return {"violations": [], "error_count": 0}
 
 
 def fairness_node(state: SchedulerState):
@@ -99,27 +158,45 @@ def fairness_node(state: SchedulerState):
     return {
         "fairness_scores": metrics.get("individual_payoffs", {}),
         "worst_worker": worst_worker,
-        "prev_min_score": metrics.get("rawlsian_minimum_payoff", 0)
+        "prev_min_score": metrics.get("rawlsian_minimum_payoff", 0),
+        "fairness_gap": metrics.get("fairness_envy_gap", 0)
     }
 
 
 def refine_node(state: SchedulerState):
-    """Rigenera la turnazione favorendo il medico più svantaggiato."""
+    """
+    Fase di refinement: boosta i pesi del worst_worker (duplicandoli) senza
+    rilanciare il solver. Il controllo torna a `draft_node`, che rigenera la
+    turnazione con i nuovi pesi. Questo rende esplicito il loop:
+        fairness -> refine -> draft -> verify -> fairness -> ...
+    """
     print(f"-> [NODE] refine_node (iterazione {state.get('iteration', 0) + 1})")
-    prefs = state["preferences"]
-    workers_dict = prefs.get("workers", prefs)
-    num_workers = len(workers_dict)
-    has_specialist = any(w.get("role") == "specialist" for w in workers_dict.values())
+    boosted_prefs = copy.deepcopy(state["preferences"])
+    workers_dict = boosted_prefs.get("workers", boosted_prefs)
+    worst_worker = state.get("worst_worker")
 
-    schedule = drafting_agent.refine(
-        preferences=prefs,
-        current_schedule=state["schedule"],
-        worst_worker=state["worst_worker"],
-        num_workers=num_workers,
-        num_days=NUM_DAYS,
-        has_specialist=has_specialist
-    )
-    return {"schedule": schedule, "violations": [], "iteration": state.get("iteration", 0) + 1}
+    if worst_worker and worst_worker in workers_dict:
+        worker_data = workers_dict[worst_worker]
+        if "shift_weights" in worker_data:
+            # Clamp ai limiti dello schema Pydantic [-10, 10]
+            worker_data["shift_weights"] = [
+                max(min(w * 2, 10), -10) for w in worker_data["shift_weights"]
+            ]
+        for sc in worker_data.get("soft_constraints", []):
+            if "weight" in sc:
+                # Clamp ai limiti dello schema Pydantic [-10, 10]
+                sc["weight"] = max(min(sc["weight"] * 2, 10), -10)
+        print(f"   [REFINE] Pesi raddoppiati per worst_worker '{worst_worker}'.")
+    else:
+        print(f"   [REFINE] WARN: worst_worker '{worst_worker}' non trovato tra i workers.")
+
+    # Non rilanciamo qui il solver: ritorniamo a draft_node per rigenerare.
+    return {
+        "preferences": boosted_prefs,
+        "violations": [],
+        "error_count": 0,
+        "iteration": state.get("iteration", 0) + 1,
+    }
 
 
 # -----------------------------------------------------------------------------
@@ -128,14 +205,32 @@ def refine_node(state: SchedulerState):
 
 def should_retry_parse(state: SchedulerState) -> str:
     if state.get("violations"):
-        print("   [FATAL] Parsing fallito. Termino.")
+        if state.get("error_count", 0) < MAX_RETRIES:
+            print(f"   [RETRY] worker_node - tentativo {state['error_count']}")
+            return "worker_node"
+        print("   [FATAL] Parsing fallito dopo 3 tentativi. Termino.")
         return END
     return "rag_node"
 
 
 def should_retry_rag(state: SchedulerState) -> str:
-    # Il RAG non modifica le violations, proseguiamo sempre al draft
+    if state.get("violations"):
+        if state.get("error_count", 0) < MAX_RETRIES:
+            print(f"   [RETRY] rag_node - tentativo {state['error_count']}")
+            return "rag_node"
+        print("   [FATAL] RAG fallito dopo 3 tentativi. Termino.")
+        return END
     return "draft_node"
+
+
+def should_retry_draft(state: SchedulerState) -> str:
+    if state.get("violations"):
+        if state.get("error_count", 0) < MAX_RETRIES:
+            print(f"   [RETRY] draft_node - tentativo {state['error_count']}")
+            return "draft_node"
+        print("   [FATAL] Draft fallito dopo 3 tentativi. Termino.")
+        return END
+    return "verify_node"
 
 
 def check_verification(state: SchedulerState) -> str:
@@ -148,9 +243,28 @@ def check_verification(state: SchedulerState) -> str:
 def decide_refinement(state: SchedulerState) -> str:
     has_worst = bool(state.get("worst_worker"))
     under_limit = state.get("iteration", 0) < 3
-    if has_worst and under_limit:
+    
+    # Se il gap tra il medico più soddisfatto e quello meno soddisfatto è maggiore di 10,
+    # consideriamo la turnazione iniqua e proviamo a rifinirla.
+    gap_troppo_alto = state.get("fairness_gap", 0) > 10
+    
+    if has_worst and gap_troppo_alto and under_limit:
+        print(f"   [ROUTING] Fairness gap alto ({state.get('fairness_gap')}). Avvio refinement.")
         return "refine_node"
+        
+    print(f"   [ROUTING] Fairness gap accettabile ({state.get('fairness_gap')}) o limite raggiunto. Fine.")
     return END
+
+
+def should_retry_refine(state: SchedulerState) -> str:
+    if state.get("violations"):
+        if state.get("error_count", 0) < MAX_RETRIES:
+            print(f"   [RETRY] refine_node - tentativo {state['error_count']}")
+            return "refine_node"
+        print("   [FATAL] Refine fallito dopo 3 tentativi. Termino.")
+        return END
+    # Torna a draft_node per rigenerare la turnazione con i pesi boostati
+    return "draft_node"
 
 
 # -----------------------------------------------------------------------------
@@ -170,9 +284,9 @@ def create_scheduler_graph():
     workflow.add_edge(START, "worker_node")
     workflow.add_conditional_edges("worker_node", should_retry_parse)
     workflow.add_conditional_edges("rag_node", should_retry_rag)
-    workflow.add_edge("draft_node", "verify_node")
-    workflow.add_conditional_edges("verify_node", check_verification)
+    workflow.add_conditional_edges("draft_node", should_retry_draft)      # Nuovo: retry su errore solver
+    workflow.add_conditional_edges("verify_node", check_verification)     # Retry su violazioni hard → draft
     workflow.add_conditional_edges("fairness_node", decide_refinement)
-    workflow.add_edge("refine_node", "verify_node")
+    workflow.add_conditional_edges("refine_node", should_retry_refine)    # Nuovo: retry su errore refine
 
     return workflow.compile()

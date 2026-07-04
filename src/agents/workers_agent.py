@@ -14,7 +14,7 @@ class WorkersAgent:
     """
     def __init__(self):
         # Inizializzazione del modello LLM (Gemini) con temperatura deterministica
-        self.llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash", temperature=0) 
+        self.llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite", temperature=0) 
         
         # System prompt ottimizzato con le istruzioni e gli schemi corretti
         self.prompt = ChatPromptTemplate.from_messages([
