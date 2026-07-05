@@ -462,6 +462,12 @@ main {
   border: 1px solid rgba(248, 113, 113, 0.2);
 }
 
+.status-badge--reverted {
+  background: rgba(251, 146, 60, 0.1);
+  color: #fb923c;
+  border: 1px solid rgba(251, 146, 60, 0.2);
+}
+
 /* ─── Fairness Card ──────────────────────────────────────────────────────── */
 
 .fairness-section {

@@ -229,6 +229,7 @@ async def stream_scheduler():
                             elif node_name == "verify_node": log_ctx.current_node = "fairness_node"
                             elif node_name == "fairness_node": log_ctx.current_node = "refine_node"
                             elif node_name == "refine_node": log_ctx.current_node = "draft_node"
+                            elif node_name == "revert_node": log_ctx.current_node = "revert_node"
                         loop.call_soon_threadsafe(queue.put_nowait, ("step", step_data))
                     loop.call_soon_threadsafe(queue.put_nowait, ("done", None))
                 except Exception as e:
@@ -309,11 +310,17 @@ async def stream_scheduler():
                             worst = node_state.get("worst_worker")
                             gap = node_state.get("fairness_gap", 0)
                             it = node_state.get("iteration", final_state.get("iteration", 0))
-                            if worst and gap > 10 and it < 3:
+                            prev_gap = node_state.get("prev_fairness_gap", final_state.get("prev_fairness_gap"))
+                            # Se il gap è peggiorato dopo refinement, vai a revert_node
+                            if prev_gap is not None and gap > prev_gap:
+                                next_node = "revert_node"
+                            elif worst and gap > 10 and it < 3:
                                 next_node = "refine_node"
                         elif node_name == "refine_node":
-                            # Torniamo a draft_node per rigenerare con i pesi boostati
                             next_node = "draft_node" if not violations else "refine_node"
+                        elif node_name == "revert_node":
+                            # Dopo revert_node il grafo termina
+                            next_node = None
 
                         if next_node:
                             yield _sse_event("node_start", {
@@ -390,6 +397,7 @@ def _node_description(node_name: str, state: dict) -> str:
         "verify_node": "Validazione deterministica dei vincoli hard sulla turnazione...",
         "fairness_node": "Calcolo delle metriche di equità (Rawlsian Maximin)...",
         "refine_node": f"Boost dei pesi del worst_worker (iterazione {state.get('iteration', 0) + 1}) e ritorno a draft...",
+        "revert_node": f"Fairness gap peggiorato ({state.get('prev_fairness_gap', '?')} → {state.get('fairness_gap', '?')}), ripristino schedule precedente.",
     }
     return descriptions.get(node_name, f"Esecuzione di {node_name}...")
 

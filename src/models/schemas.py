@@ -323,5 +323,7 @@ class SchedulerState(TypedDict):
     worst_worker   : str        # worker_id del lavoratore con punteggio minimo.
     prev_min_score : int        # Punteggio minimo dell'iterazione precedente.
     fairness_gap   : int        # Differenza tra il medico con punteggio massimo e quello minimo.
-    iteration      : int        # Contatore del ciclo di refinement.
-    error_count    : int        # Contatore dei tentativi falliti (per worker e rag node).
+    iteration        : int        # Contatore del ciclo di refinement.
+    error_count      : int        # Contatore dei tentativi falliti (per worker e rag node).
+    prev_schedule    : dict | None  # Schedule precedente, salvata prima del refinement per rollback.
+    prev_fairness_gap: int | None   # Fairness gap precedente, per confronto post-refinement.

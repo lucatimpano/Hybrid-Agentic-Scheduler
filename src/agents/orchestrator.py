@@ -191,11 +191,14 @@ def refine_node(state: SchedulerState):
         print(f"   [REFINE] WARN: worst_worker '{worst_worker}' non trovato tra i workers.")
 
     # Non rilanciamo qui il solver: ritorniamo a draft_node per rigenerare.
+    # Salviamo schedule e gap correnti per eventuale rollback se il refinement peggiora.
     return {
         "preferences": boosted_prefs,
         "violations": [],
         "error_count": 0,
         "iteration": state.get("iteration", 0) + 1,
+        "prev_schedule": state.get("schedule"),
+        "prev_fairness_gap": state.get("fairness_gap"),
     }
 
 
@@ -243,17 +246,38 @@ def check_verification(state: SchedulerState) -> str:
 def decide_refinement(state: SchedulerState) -> str:
     has_worst = bool(state.get("worst_worker"))
     under_limit = state.get("iteration", 0) < 3
+    gap = state.get("fairness_gap", 0)
+    prev_gap = state.get("prev_fairness_gap")
+    
+    # Se siamo in un ciclo di refinement e il gap è peggiorato, ripristina
+    # la schedule precedente e fermati.
+    if prev_gap is not None and gap > prev_gap:
+        print(f"   [ROUTING] Fairness gap peggiorato ({prev_gap} → {gap}). Ripristino schedule precedente.")
+        return "revert_node"
     
     # Se il gap tra il medico più soddisfatto e quello meno soddisfatto è maggiore di 10,
     # consideriamo la turnazione iniqua e proviamo a rifinirla.
-    gap_troppo_alto = state.get("fairness_gap", 0) > 10
-    
-    if has_worst and gap_troppo_alto and under_limit:
-        print(f"   [ROUTING] Fairness gap alto ({state.get('fairness_gap')}). Avvio refinement.")
+    if has_worst and gap > 10 and under_limit:
+        print(f"   [ROUTING] Fairness gap alto ({gap}). Avvio refinement.")
         return "refine_node"
         
-    print(f"   [ROUTING] Fairness gap accettabile ({state.get('fairness_gap')}) o limite raggiunto. Fine.")
+    print(f"   [ROUTING] Fairness gap accettabile ({gap}) o limite raggiunto. Fine.")
     return END
+
+
+def revert_node(state: SchedulerState):
+    """Ripristina la schedule precedente quando il refinement peggiora il gap."""
+    print(f"-> [NODE] revert_node: ripristino schedule pre-refinement")
+    prev_schedule = state.get("prev_schedule")
+    prev_gap = state.get("prev_fairness_gap")
+    if prev_schedule:
+        print(f"   [REVERT] Fairness gap ripristinato a {prev_gap}.")
+        return {
+            "schedule": prev_schedule,
+            "fairness_gap": prev_gap,
+        }
+    print("   [REVERT] WARN: nessuna schedule precedente disponibile.")
+    return {}
 
 
 def should_retry_refine(state: SchedulerState) -> str:
@@ -280,6 +304,7 @@ def create_scheduler_graph():
     workflow.add_node("verify_node", verify_node)
     workflow.add_node("fairness_node", fairness_node)
     workflow.add_node("refine_node", refine_node)
+    workflow.add_node("revert_node", revert_node)
 
     workflow.add_edge(START, "worker_node")
     workflow.add_conditional_edges("worker_node", should_retry_parse)
@@ -288,5 +313,6 @@ def create_scheduler_graph():
     workflow.add_conditional_edges("verify_node", check_verification)     # Retry su violazioni hard → draft
     workflow.add_conditional_edges("fairness_node", decide_refinement)
     workflow.add_conditional_edges("refine_node", should_retry_refine)    # Nuovo: retry su errore refine
+    workflow.add_edge("revert_node", END)
 
     return workflow.compile()

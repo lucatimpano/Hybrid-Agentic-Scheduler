@@ -10,7 +10,7 @@ import BlurText from './BlurText'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type AgentId = 'worker_node' | 'rag_node' | 'draft_node' | 'verify_node' | 'fairness_node' | 'refine_node' | 'quality_gate'
+type AgentId = 'worker_node' | 'rag_node' | 'draft_node' | 'verify_node' | 'fairness_node' | 'refine_node' | 'revert_node' | 'quality_gate'
 type AgentStatus = 'idle' | 'running' | 'done' | 'error' | 'waiting'
 
 interface LogEntry {
@@ -54,6 +54,7 @@ interface Step {
   logs: LogEntry[]
   detail?: string
   subSteps?: Step[]
+  reverted?: boolean
 }
 
 interface Assignment {
@@ -107,10 +108,11 @@ const AGENT_META: Record<AgentId, { label: string; description: string }> = {
   verify_node:   { label: 'Verification Agent',  description: 'Validazione vincoli hard' },
   fairness_node: { label: 'Fairness Agent',       description: 'Analisi equità Rawlsian Maximin' },
   refine_node:   { label: 'Refinement',           description: 'Boost pesi worst worker e rigenerazione' },
+  revert_node:   { label: 'Revert',                description: 'Ripristino schedule pre-refinement' },
   quality_gate:  { label: 'Quality Gate',         description: 'Validazione e equità della turnazione' },
 }
 
-const AGENT_ORDER: AgentId[] = ['worker_node', 'rag_node', 'draft_node', 'quality_gate', 'refine_node']
+const AGENT_ORDER: AgentId[] = ['worker_node', 'rag_node', 'draft_node', 'quality_gate']
 
 const AGENT_ICONS: Record<AgentId, React.ReactNode> = {
   worker_node:   <UsersIcon size={16} />,
@@ -119,6 +121,7 @@ const AGENT_ICONS: Record<AgentId, React.ReactNode> = {
   verify_node:   <ClipboardCheckIcon size={16} />,
   fairness_node: <ScaleIcon size={16} />,
   refine_node:   <RotateCcwIcon size={16} />,
+  revert_node:   <RotateCcwIcon size={16} />,
   quality_gate:  <CheckCircleIcon size={16} />,
 }
 
@@ -197,6 +200,11 @@ function AgentNode({ step, isLast }: { step: Step; isLast: boolean }) {
           {step.status === 'error' && (
             <span className="status-badge status-badge--error">
               <AlertCircleIcon size={10} /> Errore
+            </span>
+          )}
+          {step.reverted && (
+            <span className="status-badge status-badge--reverted">
+              <RotateCcwIcon size={10} /> Ripristinato
             </span>
           )}
         </div>
@@ -479,10 +487,13 @@ export default function App() {
   const addStep = useCallback((agentId: AgentId, message: string) => {
     const key = nextStepKey(agentId)
     const meta = AGENT_META[agentId]
+    const count = stepCounters.current[agentId] || 0
+    const isRefinement = agentId === 'draft_node' && count > 1
+    const label = isRefinement ? `${meta.label} (Refinement #${count - 1})` : meta.label
     const newStep: Step = {
       key,
       agentId,
-      label: meta.label,
+      label,
       description: meta.description,
       status: 'running',
       logs: [{ ts: Date.now(), type: 'start', message }],
@@ -542,6 +553,27 @@ export default function App() {
       const data = JSON.parse(e.data) as { node: string; message: string }
       const nodeId = data.node as AgentId
       if (nodeId === 'pipeline') return
+
+      // Refinement non è un nodo separato nella UI: aggiungiamo un log
+      // al Quality Gate per segnalare l'inizio del refinamento.
+      if (nodeId === 'refine_node' || nodeId === 'revert_node') {
+        setSteps(prev => {
+          const qIdx = prev.findLastIndex(s => s.agentId === 'quality_gate')
+          if (qIdx === -1) return prev
+          const next = [...prev]
+          next[qIdx] = {
+            ...next[qIdx],
+            reverted: nodeId === 'revert_node' ? true : next[qIdx].reverted,
+            logs: [...next[qIdx].logs, { ts: Date.now(), type: 'info',
+              message: nodeId === 'refine_node'
+                ? `Refinement: ${data.message}`
+                : `Revert: ${data.message}`,
+            }],
+          }
+          return next
+        })
+        return
+      }
 
       // Verify e Fairness vengono raggruppati sotto un unico Quality Gate
       if (nodeId === 'verify_node' || nodeId === 'fairness_node') {
@@ -628,6 +660,9 @@ export default function App() {
         has_violations: boolean
       }
       const nodeId = data.node as AgentId
+
+      // Refinement e revert sono incorporati nel Quality Gate, nessun step UI separato
+      if (nodeId === 'refine_node' || nodeId === 'revert_node') return
 
       // Chiudi il sub-step dentro il Quality Gate
       if (nodeId === 'verify_node' || nodeId === 'fairness_node') {

@@ -36,7 +36,7 @@ A React + Vite frontend streams every step of the pipeline in real time via Serv
 - **RAG compliance audit** — a ReAct agent grounded in a hospital regulation PDF approves or rejects custom constraints, citing the specific rule/article.
 - **Mathematical scheduling** — Google OR-Tools CP-SAT enforces hard institutional constraints (one shift per day, post-night rest, weekly hour limits, coverage requirements, total shift quotas).
 - **Deterministic verification** — a zero-LLM verification agent certifies that every hard constraint is satisfied.
-- **Fairness-driven refinement** — a Rawlsian maximin loop identifies the most disadvantaged worker and boosts their preferences until the fairness gap closes or the iteration cap is reached.
+- **Fairness-driven refinement** — a Rawlsian maximin loop identifies the most disadvantaged worker and boosts their preferences until the fairness gap closes or the iteration cap is reached. If a refinement step increases the gap, the system automatically reverts to the previous better schedule.
 - **Real-time dashboard** — React UI visualizes the LangGraph pipeline as it executes, with live RAG verdicts, generated CP-SAT code blocks, and a final interactive schedule grid.
 - **Stop button** — cancel a running pipeline directly from the UI.
 - **Worker detail panel** — click any doctor in the schedule to inspect their role, shift weights, hard constraints, and soft preferences.
@@ -54,6 +54,8 @@ graph TD
     G -->|yes, iteration < max| H[Refine node]
     H -->|boosted weights| D
     G -->|no| I[Final schedule + SSE dashboard]
+    G -->|gap worsened| J[Revert node]
+    J -->|restore prev schedule| I
 ```
 
 ### Components
