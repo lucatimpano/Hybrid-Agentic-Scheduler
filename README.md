@@ -13,6 +13,7 @@
 [![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev)
 [![LangChain](https://img.shields.io/badge/LangGraph-LangChain-1C3C3C?style=flat-square&logo=chainlink&logoColor=white)](https://www.langchain.com)
 [![Google OR-Tools](https://img.shields.io/badge/OR--Tools-CP--SAT-4285F4?style=flat-square&logo=google&logoColor=white)](https://developers.google.com/optimization)
+[![RAG](https://img.shields.io/badge/RAG-ReAct-8B5CF6?style=flat-square&logo=readthedocs&logoColor=white)](https://python.langchain.com/docs/concepts/rag/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
 [Overview](#overview) · [Features](#features) · [Architecture](#architecture) · [Getting Started](#getting-started) · [Usage](#usage) · [Project Structure](#project-structure)
