@@ -106,6 +106,14 @@ cd ui
 npm install
 ```
 
+### One-command start
+
+```bash
+./start.sh
+```
+
+The script checks dependencies, starts both backend and frontend, and lets you stop everything with `Ctrl+C`.
+
 ### Run the full pipeline from the CLI
 
 ```bash
@@ -114,7 +122,7 @@ PYTHONPATH=. .venv/bin/python src/main.py
 
 The final schedule is written to `data/output/final_schedule.json`.
 
-### Run the streaming server + dashboard
+### Run the streaming server + dashboard (manual)
 
 In one terminal, start the FastAPI backend:
 
