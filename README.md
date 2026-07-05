@@ -198,15 +198,12 @@ All inputs live under `data/input/`:
 │   │   └── schemas.py
 │   ├── server.py               # FastAPI + SSE backend
 │   └── main.py                 # standalone CLI entrypoint
-├── test/
-│   └── test_pipeline.py        # end-to-end pipeline tests
 ├── ui/
 │   ├── src/
 │   │   ├── App.tsx             # main dashboard
 │   │   ├── App.css             # styles + animations
 │   │   └── main.tsx
 │   └── package.json
-├── docs/                       # analysis notes and LangChain/LangGraph docs
 ├── requirements.txt
 └── README.md
 ```
