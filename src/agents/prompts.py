@@ -15,14 +15,19 @@ Your task is to analyze natural language text containing workers' requests and a
 
 === HARD vs SOFT CONSTRAINTS DISTINCTION ===
 HARD CONSTRAINT (rigid, ABSOLUTE constraints):
-- Key phrases: 'Cannot', 'Impossible', 'Must', 'Always free', 'I require', 'I demand'
-- Examples: 'I cannot work on December 25' → HardConstraint
-            'I must have Monday free' → HardConstraint
-- Non-negotiable; the worker cannot work under those conditions.
+- Key phrases (EN): 'Cannot', 'Impossible', 'Must', 'Always free', 'I require', 'I demand', 'Absolutely must'
+- Key phrases (IT): 'Non posso', 'Impossibile', 'Devo', 'Necessità assoluta', 'Mi serve libero', 'Ho bisogno di', 'È indispensabile', 'È obbligatorio', 'Ho una necessità', 'Devo essere libero'
+- Examples: 'I cannot work on December 25' → HardConstraint free_date
+            'Non posso lavorare il 25 dicembre' → HardConstraint free_date
+            'Ho una necessità assoluta: mi serve il giorno libero venerdì 25 dicembre' → HardConstraint free_date
+            'I must have Monday free' → HardConstraint free_weekday
+- Non-negotiable; the worker cannot work under those conditions. If a worker states they NEED a specific day off as an absolute requirement, it MUST be a hard constraint, never a soft constraint.
 
 === SOFT CONSTRAINT (flexible preferences, WISHES) ===
-- Key phrases: 'Preferably', 'If possible', 'I would like', 'I would avoid', 'I would prefer'
+- Key phrases (EN): 'Preferably', 'If possible', 'I would like', 'I would avoid', 'I would prefer'
+- Key phrases (IT): 'Preferibilmente', 'Se possibile', 'Vorrei', 'Mi piacerebbe', 'Eviterei', 'Preferirei', 'Gradirei'
 - Examples: 'I would prefer not to work afternoon shifts' → SoftConstraint
+            'Preferirei non fare i turni pomeridiani' → SoftConstraint
             'Maximum 3 shifts per week' → SoftConstraint with type: max_shifts_per_week
             'I prefer to work at most 2 Afternoon shifts a week' → SoftConstraint with type: custom
 - Negotiable; they guide optimization but are not rigid.
@@ -42,7 +47,7 @@ Negative (-): The worker WANTS TO AVOID that schedule/day/shift.
 2. Weekdays ALWAYS in English and capitalized (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday).
 3. Dates in ISO 8601 format: YYYY-MM-DD (e.g., 2026-12-25).
 4. ALWAYS maintain the original description in the 'description' field for traceability. For custom constraints, also populate 'natural_language'.
-5. If the worker explicitly states their role (e.g., specialist), map it to the 'role' field. Otherwise default='standard'.
+5. If the worker explicitly states their role, map it to the 'role' field. Recognize both English ('specialist') and Italian forms ('medico specialista', 'specialista', 'medico standard', 'standard'). Otherwise default='standard'.
 6. 'shift_weights' is a list of EXACTLY 3 integers [Morning, Afternoon, Night]. Use positive values for preferred shifts, negative for shifts to avoid, and 0 for neutral.
 7. Do NOT create custom (or any other) constraints for generic statements of availability, general principles (e.g. wanting an equitable workload distribution, saying they are open to any rotation), greetings, or meta-comments that do not demand a concrete, actionable scheduling limit. If a doctor has no specific demands, keep their 'hard_constraints' and 'soft_constraints' lists empty.
 
@@ -85,6 +90,22 @@ OUTPUT:
           "description": "At most 2 afternoon shifts per week"
         }},
         {{"type": "free_weekday", "value": "Sunday", "shift": null, "weight": -5, "natural_language": null, "description": "Prefer Sundays off"}}
+      ]
+    }}
+  }}
+}}
+
+INPUT: 'Sono il Dott. Conti (ID_13), medico specialista. Preferisco i turni mattutini nei giorni feriali. Vorrei evitare i turni notturni nel fine settimana.'
+
+OUTPUT:
+{{
+  "workers": {{
+    "ID_13": {{
+      "role": "specialist",
+      "shift_weights": [7, 0, -5],
+      "hard_constraints": [],
+      "soft_constraints": [
+        {{"type": "custom", "value": null, "shift": null, "weight": -6, "natural_language": "Worker prefers to avoid Night shifts (shift index 2) on weekends (Saturday and Sunday). Penalize any Night shift assigned on a weekend day.", "description": "Avoid night shifts on weekends"}}
       ]
     }}
   }}

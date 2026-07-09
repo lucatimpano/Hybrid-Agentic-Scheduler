@@ -1,0 +1,20 @@
+ID_0: Salve, sono il Dott. Rossi, medico standard. Avendo turni di specializzazione universitari al mattino, preferisco nettamente coprire i turni pomeridiani. Se possibile, vorrei evitare i turni di notte perché soffro di insonnia.
+ID_1: Sono la Dott.ssa Bianchi, medico standard. Non ho alcun problema a fare i turni di notte o a lavorare nei fine settimana. Tuttavia, ho una necessità assoluta: mi serve il giorno libero venerdì 25 dicembre per passare il Natale in famiglia.
+ID_2: Sono il Dott. Verdi, medico standard. Esprimo la mia preferenza per i turni mattutini, che trovo più produttivi. Inoltre, ho un vincolo particolarissimo: vorrei tanto che i miei turni ricadessero esclusivamente in giorni del mese con data pari.
+ID_3: Qui Dott.ssa Neri, medico standard. La mia richiesta principale riguarda i giorni di riposo: preferirei che fossero concentrati nel fine settimana, preferibilmente di domenica, per motivi personali.
+ID_4: Sono il Dott. Russo, medico standard. Mi rendo disponibile per coprire i turni di notte e i festivi senza problemi, ma vorrei evitare i turni pomeridiani perché nel secondo pomeriggio ho un corso di aggiornamento fisso.
+ID_5: Salve, sono la Dott.ssa Ferrari, medico standard. Preferisco chiaramente i turni mattutini. Eviterei volentieri il turno pomeridiano se combinato nella stessa settimana con turni di notte.
+ID_6: Sono il Dott. Esposito, medico standard. Preferisco una turnazione bilanciata di mattina. Eviterei volentieri il turno pomeridiano se combinato nella stessa settimana con turni di notte.
+ID_7: Sono la Dott.ssa Romano, medico standard. Per me è indifferente fare mattina o pomeriggio, ma preferirei non fare più di una notte a settimana. Inoltre, gradirei avere il giorno libero il 26 dicembre (Santo Stefano).
+ID_8: Qui Dott. Gallo, medico standard. Chiedo gentilmente di concentrare i miei turni nella prima metà della settimana (lunedì, martedì, mercoledì), preferendo la mattina. Vorrei avere i weekend liberi quando possibile.
+ID_9: Sono la Dott.ssa Ricci, medico standard. Preferisco i turni pomeridiani e notturni, non sono un tipo mattiniero. Esprimo però la preferenza di avere la giornata libera il 6 gennaio per l'Epifania.
+ID_10: Sono il Dott. Marino, medico standard. Preferirei avere i mercoledì del mese come giorni di riposo per assistere un familiare.
+ID_11: Salve, Dott.ssa Bruno, medico standard. Esprimo forte preferenza per i turni di mattina. Ho una bassissima tolleranza verso i turni di notte, vi prego di assegnarmene il meno possibile.
+ID_12: Sono il Dott. Mazza, medico standard. Sono disponibile a qualsiasi rotazione (mattina, pomeriggio, notte) e non ho richieste specifiche per i giorni festivi, l'importante è che la distribuzione totale dei carichi sia equa con i colleghi.
+ID_13: Sono il Dott. Conti, medico specialista. Preferisco i turni mattutini nei giorni feriali. Vorrei evitare i turni notturni nel fine settimana. Se possibile, vorrei il giorno libero il 25 dicembre.
+ID_14: Sono la Dott.ssa Greco, medico specialista. Non ho problemi con i turni notturni, anzi preferisco la notte per la quiete del reparto. Vorrei però evitare i turni pomeridiani consecutivi.
+ID_15: Sono il Dott. Lombardi, medico specialista. Preferisco lavorare nei fine settimana e riposare un giorno feriale a settimana. Gradirei evitare il turno di notte del 31 dicembre.
+ID_16: Sono la Dott.ssa Moretti, medico specialista. Preferirei essere libera ogni venerdì per motivi di ricerca. Per il resto sono flessibile su mattina e pomeriggio, ma eviterei la notte.
+ID_17: Sono il Dott. Barbieri, medico specialista. Preferisco i turni pomeridiani e non ho problemi con le notti. Chiedo gentilmente di non essere assegnato ai turni del sabato mattina.
+ID_18: Sono la Dott.ssa Esposito, medico specialista. Soffro di insonnia quindi evito volentieri i turni notturni. Preferisco concentrarmi sui turni mattutini. Se possibile, vorrei il giorno libero il 1 gennaio.
+ID_19: Sono il Dott. Rizzo, medico specialista. Sono flessibile su tutti i turni ma preferisco alternare mattina e pomeriggio. Eviterei più di due notti a settimana. Vorrei libero il 26 dicembre.

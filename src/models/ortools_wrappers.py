@@ -279,9 +279,19 @@ class SmartSchedulerWrapper:
 
     def solve(self) -> int:
         self.solver = cp_model.CpSolver()
-        self.solver.parameters.max_time_in_seconds = 60.0
+        self.solver.parameters.max_time_in_seconds = 300.0
+        self.solver.parameters.num_search_workers = 8
 
         self.status = self.solver.Solve(self.model)
+
+        status_names = {
+            cp_model.OPTIMAL: "OPTIMAL",
+            cp_model.FEASIBLE: "FEASIBLE",
+            cp_model.INFEASIBLE: "INFEASIBLE",
+            cp_model.UNKNOWN: "UNKNOWN",
+            cp_model.MODEL_INVALID: "MODEL_INVALID",
+        }
+        print(f"CP-SAT status: {status_names.get(self.status, '???')}")
 
         if self.status == cp_model.OPTIMAL or self.status == cp_model.FEASIBLE:
             print("Soluzione ottimale o ammissibile trovata.")

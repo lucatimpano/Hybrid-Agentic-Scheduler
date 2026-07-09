@@ -8,8 +8,10 @@ set_debug(False)
 from src.agents.orchestrator import create_scheduler_graph
 
 def main():
-    # Percorso del file di input
-    input_file = "data/input/workers_preferences.txt"
+    # Seleziona il caso: "a" per Caso A (13 workers standard), "b" per Caso B (20 workers con specialisti)
+    CASE = "a"
+
+    input_file = f"data/input/workers_preferences{'_caso_b' if CASE == 'b' else ''}.txt"
     output_file = "data/output/final_schedule.json"
     
     if not os.path.exists(input_file):

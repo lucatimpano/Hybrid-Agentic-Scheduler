@@ -145,6 +145,8 @@ def verify_node(state: SchedulerState):
 
     if not result["is_valid"]:
         print(f"   [VERIFY] FATAL: Violazioni deterministiche rilevate, impossibile risolvere.")
+        for v in result["violations"]:
+            print(f"     - {v}")
         return {"violations": result["violations"], "error_count": MAX_RETRIES}
 
     # Successo: resetta error_count per la fase successiva
@@ -231,6 +233,10 @@ def should_retry_draft(state: SchedulerState) -> str:
         if state.get("error_count", 0) < MAX_RETRIES:
             print(f"   [RETRY] draft_node - tentativo {state['error_count']}")
             return "draft_node"
+        # Se abbiamo una schedule precedente valida (refinement fallito), ripristina
+        if state.get("prev_schedule") is not None:
+            print("   [FALLBACK] Refinement draft fallito. Ripristino schedule precedente.")
+            return "revert_node"
         print("   [FATAL] Draft fallito dopo 3 tentativi. Termino.")
         return END
     return "verify_node"
@@ -266,7 +272,7 @@ def decide_refinement(state: SchedulerState) -> str:
 
 
 def revert_node(state: SchedulerState):
-    """Ripristina la schedule precedente quando il refinement peggiora il gap."""
+    """Ripristina la schedule precedente quando il refinement peggiora il gap o fallisce."""
     print(f"-> [NODE] revert_node: ripristino schedule pre-refinement")
     prev_schedule = state.get("prev_schedule")
     prev_gap = state.get("prev_fairness_gap")
@@ -275,6 +281,8 @@ def revert_node(state: SchedulerState):
         return {
             "schedule": prev_schedule,
             "fairness_gap": prev_gap,
+            "violations": [],
+            "error_count": 0,
         }
     print("   [REVERT] WARN: nessuna schedule precedente disponibile.")
     return {}

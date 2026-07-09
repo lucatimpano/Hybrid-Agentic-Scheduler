@@ -62,19 +62,31 @@ main {
 
 .config-panel {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   padding: 16px 24px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
-  flex-wrap: nowrap;
-  gap: 16px;
+  gap: 12px;
+}
+
+.config-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .config-inputs {
   display: flex;
+  align-items: center;
   gap: 24px;
+  flex-wrap: wrap;
+}
+
+.config-inputs .sel-root {
+  max-width: 240px;
 }
 
 .form-row {
@@ -896,6 +908,25 @@ main {
 
 .spin {
   animation: spin 1.2s linear infinite;
+}
+
+/* ─── Floating Timer ──────────────────────────────────────────────────────── */
+
+.floating-timer {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  letter-spacing: 2px;
 }
 
 /* ─── Responsive ──────────────────────────────────────────────────────────── */

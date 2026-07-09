@@ -59,13 +59,18 @@ class VerificationAgent:
                 worker_schedule[w_id][day_idx].append(shift)
                 day_coverage[date_str][shift].append(w_id)
         
-        # 1. Verifica Vincolo Copertura (min 2 per turno, oppure 1 spec + 1 std)
+        # 1. Verifica Vincolo Copertura (Caso A: min 2, Caso B: min 3 con almeno 1 specialista)
+        workers_dict = preferences.get("workers", preferences)
         for date_str, shifts in day_coverage.items():
             for shift_name, workers in shifts.items():
-                if len(workers) < 2:
-                    violations.append(f"Copertura insufficiente: {date_str} {shift_name} ha solo {len(workers)} medici (minimo 2).")
-                elif has_specialist:
-                    specialists = [w for w in workers if preferences.get(w, {}).get("role") == "specialist"]
+                if has_specialist:
+                    min_workers = 3
+                else:
+                    min_workers = 2
+                if len(workers) < min_workers:
+                    violations.append(f"Copertura insufficiente: {date_str} {shift_name} ha solo {len(workers)} medici (minimo {min_workers}).")
+                if has_specialist:
+                    specialists = [w for w in workers if workers_dict.get(w, {}).get("role") == "specialist"]
                     if len(specialists) < 1:
                         violations.append(f"Manca specialista: {date_str} {shift_name} non ha specialisti assegnati.")
         
@@ -107,7 +112,6 @@ class VerificationAgent:
                     violations.append(f"{w_id} supera 36 ore nella finestra dal giorno {start_d} al {start_d+6} ({rolling_sum} turni standard).")
                     
         # 5. Verifica Hard Constraints personali
-        workers_dict = preferences.get("workers", preferences)
         for w_id, prefs in workers_dict.items():
             if w_id not in worker_schedule:
                 continue

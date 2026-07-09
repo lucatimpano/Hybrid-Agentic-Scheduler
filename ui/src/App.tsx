@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import './App.css'
 import BlurText from './BlurText'
+import { Select } from './components/base/select/select'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -464,10 +465,33 @@ export default function App() {
   const [preferences, setPreferences] = useState<PreferencesData | null>(null)
   const [running, setRunning] = useState(false)
   const [fairness, setFairness] = useState<FairnessData | null>(null)
-  const [numWorkers] = useState(13)
+  const [scenario, setScenario] = useState<"a" | "b">("a")
+  const numWorkers = scenario === "a" ? 13 : 20
   const [numDays] = useState(31)
+  const [elapsed, setElapsed] = useState(0)
   const eventSourceRef = useRef<EventSource | null>(null)
   const stepCounters = useRef<Record<string, number>>({})
+
+  useEffect(() => {
+    if (!running) {
+      return
+    }
+    const startedAt = Date.now()
+    const timer = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startedAt) / 1000))
+    }, 500)
+    return () => clearInterval(timer)
+  }, [running])
+
+  useEffect(() => {
+    if (!running) {
+      setSchedule(null)
+      setPreferences(null)
+      setFairness(null)
+      setSteps([])
+      stepCounters.current = {}
+    }
+  }, [scenario])
 
   // Autoscroll
   useEffect(() => {
@@ -540,13 +564,14 @@ export default function App() {
     if (running) return
     stopStream()
     setRunning(true)
+    setElapsed(0)
     setSchedule(null)
     setPreferences(null)
     setFairness(null)
     setSteps([])
     stepCounters.current = {}
 
-    const es = new EventSource(`${API_BASE}/api/stream`)
+    const es = new EventSource(`${API_BASE}/api/stream?case=${scenario}`)
     eventSourceRef.current = es
 
     es.addEventListener('node_start', (e) => {
@@ -754,7 +779,7 @@ export default function App() {
         stopStream()
       }
     }
-  }, [running, addStep, pushAgentLog, updateLastStepStatus, stopStream])
+  }, [running, addStep, pushAgentLog, updateLastStepStatus, stopStream, scenario])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -785,42 +810,55 @@ export default function App() {
 
         {/* ── Configuration & Controls ── */}
         <section className="config-panel">
-          <div className="config-inputs">
-            <div className="form-row">
-              <label className="form-label"><UsersIcon size={14} /> Workers</label>
-              <span className="form-value">{numWorkers}</span>
-            </div>
-            <div className="form-row">
-              <label className="form-label"><CalendarIcon size={14} /> Days</label>
-              <span className="form-value">{numDays}</span>
+          <div className="config-row">
+            <div className="config-inputs">
+              <Select
+                label="Scenario"
+                placeholder="Seleziona scenario"
+                items={[
+                  { id: 'a', label: 'Caso A', supportingText: '13 workers standard' },
+                  { id: 'b', label: 'Caso B', supportingText: '20 workers con specialisti' },
+                ]}
+                selectedKey={scenario}
+                onSelectionChange={(key) => setScenario(key as 'a' | 'b')}
+                isDisabled={running}
+              />
+              <div className="form-row">
+                <label className="form-label"><UsersIcon size={14} /> Workers</label>
+                <span className="form-value">{numWorkers}</span>
+              </div>
+              <div className="form-row">
+                <label className="form-label"><CalendarIcon size={14} /> Days</label>
+                <span className="form-value">{numDays}</span>
+              </div>
+
+              <WorkersAvatarGroup count={numWorkers} />
             </div>
 
-            <WorkersAvatarGroup count={numWorkers} />
-          </div>
-
-          <div className="run-controls">
-            <button
-              className={`run-btn ${running ? 'run-btn--loading' : ''}`}
-              onClick={runPipeline}
-              disabled={running}
-            >
-              {running
-                ? <><LoaderIcon size={16} className="spin" /> Generating...</>
-                : <><PlayIcon size={16} fill="currentColor" /> {anyDone ? 'Run Again' : 'Start'}</>
-              }
-            </button>
-            {running && (
+            <div className="run-controls">
               <button
-                className="stop-btn"
-                onClick={() => {
-                  stopStream()
-                  setRunning(false)
-                }}
-                title="Interrompi il pipeline"
+                className={`run-btn ${running ? 'run-btn--loading' : ''}`}
+                onClick={runPipeline}
+                disabled={running}
               >
-                <SquareIcon size={14} fill="currentColor" /> Stop
+                {running
+                  ? <><LoaderIcon size={16} className="spin" /> Generating...</>
+                  : <><PlayIcon size={16} fill="currentColor" /> {anyDone ? 'Run Again' : 'Start'}</>
+                }
               </button>
-            )}
+              {running && (
+                <button
+                  className="stop-btn"
+                  onClick={() => {
+                    stopStream()
+                    setRunning(false)
+                  }}
+                  title="Interrompi il pipeline"
+                >
+                  <SquareIcon size={14} fill="currentColor" /> Stop
+                </button>
+              )}
+            </div>
           </div>
         </section>
 
@@ -864,6 +902,12 @@ export default function App() {
           <span>SmartScheduler — Academic Project</span>
           <span>Neuro-Symbolic AI · UNICAL 2025/26</span>
         </footer>
+
+        {elapsed > 0 && (
+          <div className="floating-timer">
+            {String(Math.floor(elapsed / 60)).padStart(2, '0')}:{String(elapsed % 60).padStart(2, '0')}
+          </div>
+        )}
 
       </div>
     </main>

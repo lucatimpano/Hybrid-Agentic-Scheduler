@@ -3,7 +3,7 @@ ID_1: Sono la Dott.ssa Bianchi. Non ho alcun problema a fare i turni di notte o 
 ID_2: Sono il Dott. Verdi. Esprimo la mia preferenza per i turni mattutini, che trovo più produttivi. Inoltre, ho un vincolo particolarissimo: vorrei tanto che i miei turni ricadessero esclusivamente in giorni del mese con data pari.
 ID_3: Qui Dott.ssa Neri. La mia richiesta principale riguarda i giorni di riposo: preferirei che fossero concentrati nel fine settimana, preferibilmente di domenica, per motivi personali.
 ID_4: Sono il Dott. Russo. Mi rendo disponibile per coprire i turni di notte e i festivi senza problemi, ma vorrei evitare i turni pomeridiani perché nel secondo pomeriggio ho un corso di aggiornamento fisso.
-ID_5: Salve, sono la Dott.ssa Ferrari. Per ottimizzare i miei viaggi, chiedo di poter svolgere un singolo turno ininterrotto di 48 ore consecutive ogni fine settimana, così da concentrare tutto il mio carico di lavoro mensile in pochi giorni.
+ID_5: Salve, sono la Dott.ssa Ferrari. Per motivi di pendolarismo, chiedo gentilmente di evitare turni mattutini seguiti da turni pomeridiani il giorno successivo, per potermi organizzare con i mezzi pubblici.
 ID_6: Sono il Dott. Esposito. Preferisco una turnazione bilanciata di mattina. Eviterei volentieri il turno pomeridiano se combinato nella stessa settimana con turni di notte.
 ID_7: Sono la Dott.ssa Romano. Per me è indifferente fare mattina o pomeriggio, ma preferirei non fare più di una notte a settimana. Inoltre, gradirei avere il giorno libero il 26 dicembre (Santo Stefano).
 ID_8: Qui Dott. Gallo. Chiedo gentilmente di concentrare i miei turni nella prima metà della settimana (lunedì, martedì, mercoledì), preferendo la mattina. Vorrei avere i weekend liberi quando possibile.

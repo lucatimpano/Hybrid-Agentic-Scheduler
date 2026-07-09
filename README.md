@@ -32,12 +32,14 @@ A React + Vite frontend streams every step of the pipeline in real time via Serv
 
 ## Features
 
-- **Natural-language preference parsing** — free-text worker requests are converted into a structured, validated preference model.
+- **Natural-language preference parsing** — free-text worker requests are converted into a structured, validated preference model. Recognises both English and Italian hard/soft constraint phrases. Automatically detects worker roles (standard / specialist) from natural language.
 - **RAG compliance audit** — a ReAct agent grounded in a hospital regulation PDF approves or rejects custom constraints, citing the specific rule/article.
 - **Mathematical scheduling** — Google OR-Tools CP-SAT enforces hard institutional constraints (one shift per day, post-night rest, weekly hour limits, coverage requirements, total shift quotas).
-- **Deterministic verification** — a zero-LLM verification agent certifies that every hard constraint is satisfied.
-- **Fairness-driven refinement** — a Rawlsian maximin loop identifies the most disadvantaged worker and boosts their preferences until the fairness gap closes or the iteration cap is reached. If a refinement step increases the gap, the system automatically reverts to the previous better schedule.
-- **Real-time dashboard** — React UI visualizes the LangGraph pipeline as it executes, with live RAG verdicts, generated CP-SAT code blocks, and a final interactive schedule grid.
+- **Dual scenario support** — Caso A (13 homogeneous workers) and Caso B (13 standard + 7 specialist workers with specialist coverage constraints ≥2 std + ≥1 spec per shift).
+- **On-demand code generation** — for non-standard soft constraints (e.g. "only even-numbered days", "avoid morning-then-afternoon next day"), the DraftingAgent generates CP-SAT snippet code via LLM and exec's it into the model at runtime.
+- **Deterministic verification** — a zero-LLM verification agent certifies that every hard constraint is satisfied, including specialist coverage (≥3 workers with ≥1 specialist per shift for Caso B).
+- **Fairness-driven refinement** — a Rawlsian maximin loop identifies the most disadvantaged worker and boosts their preferences until the fairness gap closes or the iteration cap is reached. If a refinement step increases the gap or fails to solve, the system automatically reverts to the previous better schedule.
+- **Real-time dashboard** — React UI visualizes the LangGraph pipeline as it executes, with live RAG verdicts, generated CP-SAT code blocks, a final interactive schedule grid, a floating elapsed timer, and a scenario selector (Caso A / Caso B).
 - **Stop button** — cancel a running pipeline directly from the UI.
 - **Worker detail panel** — click any doctor in the schedule to inspect their role, shift weights, hard constraints, and soft preferences.
 
@@ -45,16 +47,16 @@ A React + Vite frontend streams every step of the pipeline in real time via Serv
 
 ```mermaid
 graph TD
-    A[Free-text preferences + hospital PDF] --> B[WorkersAgent]
-    B -->|structured preferences| C[RagAgent]
+    A[Caso A/B selector] -->|free-text preferences| B[WorkersAgent]
+    B -->|structured preferences + roles| C[RagAgent]
     C -->|approved / rejected constraints| D[DraftingAgent]
     D -->|CP-SAT model + solver| E[VerificationAgent]
     E -->|hard-constraint certificate| F[FairnessAgent]
-    F -->|worst_worker + fairness gap| G{Gap > threshold?}
-    G -->|yes, iteration < max| H[Refine node]
+    F -->|worst_worker + fairness gap| G{Gap &gt; threshold?}
+    G -->|yes, iteration &lt; max| H[Refine node]
     H -->|boosted weights| D
     G -->|no| I[Final schedule + SSE dashboard]
-    G -->|gap worsened| J[Revert node]
+    G -->|gap worsened OR refinement fails| J[Revert node]
     J -->|restore prev schedule| I
 ```
 
@@ -62,14 +64,15 @@ graph TD
 
 | Component | Location | Responsibility |
 |---|---|---|
-| **FastAPI server** | `src/server.py` | Exposes `/api/stream` (SSE) and `/api/schedule` (JSON). |
-| **LangGraph orchestrator** | `src/agents/orchestrator.py` | Compiles the agent graph and routes the refinement loop. |
-| **WorkersAgent** | `src/agents/workers_agent.py` | Parses natural-language preferences into structured JSON. |
-| **RagAgent** | `src/agents/rag_agent.py` | ReAct agent over `regolamento_ospedaliero.pdf` for compliance checks. |
-| **DraftingAgent** | `src/agents/drafting_agent.py` | Builds the CP-SAT model; can generate custom soft-constraint code on demand. |
-| **VerificationAgent** | `src/agents/verification_agent.py` | Deterministic validation of all hard constraints. |
+| **FastAPI server** | `src/server.py` | Exposes `/api/stream?case=a\|b` (SSE) for scenario-aware pipeline streaming. |
+| **LangGraph orchestrator** | `src/agents/orchestrator.py` | Compiles the agent graph, routes refinement loop, handles revert on refinement failure. |
+| **WorkersAgent** | `src/agents/workers_agent.py` | Parses natural-language preferences (IT/EN) into structured JSON with role detection. |
+| **RagAgent** | `src/agents/rag_agent.py` | ReAct agent over `regolamento_ospedaliero.pdf` for compliance checks on custom constraints. |
+| **DraftingAgent** | `src/agents/drafting_agent.py` | Builds CP-SAT model (Caso A/B coverage); generates custom soft-constraint code on demand. |
+| **VerificationAgent** | `src/agents/verification_agent.py` | Deterministic validation of hard constraints incl. specialist coverage (Caso B). |
 | **FairnessAgent** | `src/agents/fairness_agent.py` | Computes satisfaction scores and identifies the worst-off worker. |
-| **React dashboard** | `ui/src/App.tsx` | Real-time pipeline UI and schedule visualization. |
+| **Select component** | `ui/src/components/base/select/` | Reusable custom drop-down for scenario selection and similar UI controls. |
+| **React dashboard** | `ui/src/App.tsx` | Real-time pipeline UI, schedule grid, RAG/code logs, fairness metrics, floating timer. |
 
 ## Getting Started
 
@@ -120,6 +123,7 @@ The script checks dependencies, starts both backend and frontend, and lets you s
 ### Run the full pipeline from the CLI
 
 ```bash
+# Edit CASE = "a" or CASE = "b" in src/main.py to select scenario
 PYTHONPATH=. .venv/bin/python src/main.py
 ```
 
@@ -145,24 +149,18 @@ Open `http://localhost:5173` in your browser. The UI connects to `http://localho
 > [!TIP]
 > If you prefer to run everything locally, configure Ollama and set the appropriate local model in the agent configuration. This avoids cloud API costs and keeps data on your machine.
 
-### Run the tests
-
-```bash
-.venv/bin/python test/test_pipeline.py
-```
-
-> [!NOTE]
-> The pipeline tests call Gemini for parsing and drafting, so `GEMINI_API_KEY` must be set.
-
 ## Usage
 
 ### Input files
 
 All inputs live under `data/input/`:
 
-- `workers_preferences.txt` — free-text preferences from doctors.
+- `workers_preferences.txt` — free-text preferences for Caso A (13 homogeneous workers).
+- `workers_preferences_caso_b.txt` — free-text preferences for Caso B (13 standard + 7 specialist workers).
 - `hospital_config.json` — coverage requirements, shift types, and role mappings.
 - `regolamento_ospedaliero.pdf` — hospital regulation used by the RAG compliance agent.
+
+Use the **Scenario** drop-down in the UI or the `CASE` variable in `main.py` to switch between Caso A and Caso B.
 
 ### Output
 
@@ -171,10 +169,13 @@ All inputs live under `data/input/`:
 
 ### UI overview
 
-- **Pipeline steps** — each LangGraph node appears as a step. `verify_node` and `fairness_node` are grouped under a single *Quality Gate* composite step.
+- **Scenario selector** — top bar drop-down to switch between Caso A (13 workers) and Caso B (20 workers with specialists).
+- **Config panel** — shows current worker count, days, scenario, and Run/Stop buttons.
+- **Pipeline steps** — each LangGraph node appears as a step. `verify_node` and `fairness_node` are grouped under a single *Quality Gate* composite step. Refinement/revert events are logged inside the Quality Gate.
 - **RAG verdicts** — approved or rejected constraints show the rule/article badge and the cited reason.
 - **Generated code** — CP-SAT soft-constraint code emitted by DraftingAgent is rendered in collapsible code blocks.
 - **Schedule grid** — rows are doctors, columns are days; click a doctor to open the preferences panel.
+- **Floating timer** — elapsed time displayed in bottom-right corner during and after pipeline execution.
 - **Stop button** — aborts a running pipeline immediately.
 
 ## Project Structure
@@ -182,7 +183,7 @@ All inputs live under `data/input/`:
 ```text
 .
 ├── data/
-│   ├── input/                  # preferences, config, regulation PDF
+│   ├── input/                  # preferences (caso A + B), config, regulation PDF
 │   └── output/                 # generated schedule JSON
 ├── src/
 │   ├── agents/                 # LangGraph agent implementations
@@ -200,10 +201,13 @@ All inputs live under `data/input/`:
 │   └── main.py                 # standalone CLI entrypoint
 ├── ui/
 │   ├── src/
+│   │   ├── components/
+│   │   │   └── base/select/    # custom Select component
 │   │   ├── App.tsx             # main dashboard
 │   │   ├── App.css             # styles + animations
 │   │   └── main.tsx
 │   └── package.json
+├── start.sh                    # one-command backend + frontend startup
 ├── requirements.txt
 └── README.md
 ```

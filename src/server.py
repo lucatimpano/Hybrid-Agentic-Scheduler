@@ -15,7 +15,7 @@ import io
 import threading
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse
 
@@ -72,7 +72,7 @@ _CODE_END_RE = re.compile(r"\[CODE\]\s+END")
 # ---------------------------------------------------------------------------
 
 @app.get("/api/stream")
-async def stream_scheduler():
+async def stream_scheduler(case: str = Query("a", description="Caso A (13 workers) o B (20 workers con specialisti)")):
     """
     Esegue il pipeline LangGraph e ne streama gli aggiornamenti come SSE.
 
@@ -93,7 +93,10 @@ async def stream_scheduler():
     rappresenta il "salto all'indietro" del loop di refinement.
     """
 
-    input_file = "data/input/workers_preferences.txt"
+    suffix = "_caso_b" if case == "b" else ""
+    input_file = f"data/input/workers_preferences{suffix}.txt"
+
+    print(f"[server] Caso {case.upper()} — lettura da: {input_file}")
 
     if not os.path.exists(input_file):
         return JSONResponse(
