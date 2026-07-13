@@ -113,7 +113,6 @@ const AGENT_META: Record<AgentId, { label: string; description: string }> = {
   quality_gate:  { label: 'Quality Gate',         description: 'Validazione e equità della turnazione' },
 }
 
-const AGENT_ORDER: AgentId[] = ['worker_node', 'rag_node', 'draft_node', 'quality_gate']
 
 const AGENT_ICONS: Record<AgentId, React.ReactNode> = {
   worker_node:   <UsersIcon size={16} />,
@@ -136,14 +135,6 @@ function Avatar({ src, placeholder, className = '' }: { src?: string; placeholde
   );
 }
 
-function AvatarAddButton() {
-  return (
-    <button className="avatar-add-btn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-    </button>
-  );
-}
-
 function WorkersAvatarGroup({ count }: { count: number }) {
   const displayCount = Math.min(count, 10);
   const remaining = count > 10 ? count - 10 : 0;
@@ -158,7 +149,6 @@ function WorkersAvatarGroup({ count }: { count: number }) {
           <Avatar placeholder={<span className="avatar-placeholder">+{remaining}</span>} />
         )}
       </div>
-      <AvatarAddButton />
     </div>
   );
 }
@@ -310,7 +300,7 @@ function FairnessCard({ data }: { data: FairnessData }) {
 
 // ─── Worker Detail Panel ─────────────────────────────────────────────────────
 
-function WorkerDetailPanel({ workerId, prefs }: { workerId: string; prefs?: PreferencesData['workers'][string] }) {
+function WorkerDetailPanel({ prefs }: { workerId: string; prefs?: PreferencesData['workers'][string] }) {
   if (!prefs) return <div className="worker-detail-panel">Nessuna preferenza disponibile.</div>
 
   const hard = prefs.hard_constraints || []
@@ -577,7 +567,7 @@ export default function App() {
     es.addEventListener('node_start', (e) => {
       const data = JSON.parse(e.data) as { node: string; message: string }
       const nodeId = data.node as AgentId
-      if (nodeId === 'pipeline') return
+      if ((data.node as string) === 'pipeline') return
 
       // Refinement non è un nodo separato nella UI: aggiungiamo un log
       // al Quality Gate per segnalare l'inizio del refinamento.
@@ -759,7 +749,7 @@ export default function App() {
       })
     })
 
-    es.addEventListener('error', (e) => {
+    es.addEventListener('error', (e: MessageEvent) => {
       try {
         const data = JSON.parse(e.data) as { message: string; violations?: string[] }
         pushAgentLog('draft_node', 'error', data.message)
@@ -797,14 +787,8 @@ export default function App() {
           <div>
             <h1 className="page-title">SmartScheduler</h1>
             <p className="page-subtitle">
-              Hybrid Agentic Multi-Agent System for hospital shift optimization
+              Sistema multi-agente per la generazione di una turnazione ospedaliera.
             </p>
-          </div>
-          <div className="header-tags">
-            <span className="tag">LangGraph</span>
-            <span className="tag">OR-Tools</span>
-            <span className="tag">CP-SAT</span>
-            <span className="tag">RAG</span>
           </div>
         </header>
 
@@ -867,7 +851,7 @@ export default function App() {
           {steps.length === 0 && !running && (
              <div className="empty-state">
                 <CalendarIcon size={32} className="empty-icon" />
-                <p>Premi Start per avviare il pipeline multi-agente e generare la turnazione in tempo reale.</p>
+                <p>Premi Start per avviare la pipeline multi-agente e generare la turnazione in tempo reale.</p>
              </div>
           )}
 
@@ -899,8 +883,8 @@ export default function App() {
 
         {/* ── Footer ── */}
         <footer className="page-footer">
-          <span>SmartScheduler — Academic Project</span>
-          <span>Neuro-Symbolic AI · UNICAL 2025/26</span>
+          <span>Progetto per il corso di Intelligenza Artificiale</span>
+          <span>UNICAL — A.A. 2025/2026</span>
         </footer>
 
         {elapsed > 0 && (

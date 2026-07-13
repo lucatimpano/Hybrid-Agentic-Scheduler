@@ -74,36 +74,28 @@ function Select({
       {hint && <p className="sel-hint">{hint}</p>}
       {open && (
         <div className="sel-popover">
-          {items.map((item) => {
-            const itemEl = children ? (
-              children(item)
-            ) : (
-              <SelectItem id={item.id} supportingText={item.supportingText} isDisabled={item.disabled}>
-                {item.label}
-              </SelectItem>
-            )
-
-            return (
-              <div
-                key={item.id}
-                className={`sel-item ${item.disabled ? 'sel-item--disabled' : ''} ${item.id === selectedKey ? 'sel-item--selected' : ''}`}
-                onClick={() => {
-                  if (!item.disabled && onSelectionChange) {
-                    onSelectionChange(item.id)
-                    setOpen(false)
-                  }
-                }}
-              >
-                {item.icon && <span className="sel-item-icon">{item.icon}</span>}
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className={`sel-item ${item.disabled ? 'sel-item--disabled' : ''} ${item.id === selectedKey ? 'sel-item--selected' : ''}`}
+              onClick={() => {
+                if (!item.disabled && onSelectionChange) {
+                  onSelectionChange(item.id)
+                  setOpen(false)
+                }
+              }}
+            >
+              {item.icon && <span className="sel-item-icon">{item.icon}</span>}
+              {children ? children(item) : (
                 <div className="sel-item-body">
                   <span className="sel-item-label">{item.label}</span>
                   {item.supportingText && (
                     <span className="sel-item-support">{item.supportingText}</span>
                   )}
                 </div>
-              </div>
-            )
-          })}
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -41,22 +41,6 @@ main {
   max-width: 480px;
 }
 
-.header-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.tag {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
-  padding: 4px 10px;
-  border-radius: 4px;
-  background: var(--surface);
-}
 
 /* ─── Config Panel ───────────────────────────────────────────────────────── */
 
@@ -197,26 +181,6 @@ main {
   font-weight: 600;
   font-family: var(--font-mono);
   color: var(--text-secondary);
-}
-
-.avatar-add-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px dashed var(--border);
-  background: transparent;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.avatar-add-btn:hover {
-  border-color: var(--text-secondary);
-  color: var(--text-secondary);
-  background: var(--surface-2);
 }
 
 /* ─── Run button ─────────────────────────────────────────────────────────── */
@@ -944,10 +908,6 @@ main {
   .page-header {
     flex-direction: column;
     gap: 16px;
-  }
-
-  .header-tags {
-    justify-content: flex-start;
   }
 }
 

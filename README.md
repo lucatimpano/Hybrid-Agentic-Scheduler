@@ -1,4 +1,5 @@
 <!-- prettier-ignore -->
+
 <div align="center">
 
 <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M8 14h.01"></path><path d="M12 14h.01"></path><path d="M16 14h.01"></path><path d="M8 18h.01"></path><path d="M12 18h.01"></path><path d="M16 18h.01"></path></svg>
@@ -52,8 +53,8 @@ graph TD
     C -->|approved / rejected constraints| D[DraftingAgent]
     D -->|CP-SAT model + solver| E[VerificationAgent]
     E -->|hard-constraint certificate| F[FairnessAgent]
-    F -->|worst_worker + fairness gap| G{Gap &gt; threshold?}
-    G -->|yes, iteration &lt; max| H[Refine node]
+    F -->|worst_worker + fairness gap| G{Gap > threshold?}
+    G -->|yes, iteration < max| H[Refine node]
     H -->|boosted weights| D
     G -->|no| I[Final schedule + SSE dashboard]
     G -->|gap worsened OR refinement fails| J[Revert node]
@@ -62,17 +63,17 @@ graph TD
 
 ### Components
 
-| Component | Location | Responsibility |
-|---|---|---|
-| **FastAPI server** | `src/server.py` | Exposes `/api/stream?case=a\|b` (SSE) for scenario-aware pipeline streaming. |
-| **LangGraph orchestrator** | `src/agents/orchestrator.py` | Compiles the agent graph, routes refinement loop, handles revert on refinement failure. |
-| **WorkersAgent** | `src/agents/workers_agent.py` | Parses natural-language preferences (IT/EN) into structured JSON with role detection. |
-| **RagAgent** | `src/agents/rag_agent.py` | ReAct agent over `regolamento_ospedaliero.pdf` for compliance checks on custom constraints. |
-| **DraftingAgent** | `src/agents/drafting_agent.py` | Builds CP-SAT model (Caso A/B coverage); generates custom soft-constraint code on demand. |
-| **VerificationAgent** | `src/agents/verification_agent.py` | Deterministic validation of hard constraints incl. specialist coverage (Caso B). |
-| **FairnessAgent** | `src/agents/fairness_agent.py` | Computes satisfaction scores and identifies the worst-off worker. |
-| **Select component** | `ui/src/components/base/select/` | Reusable custom drop-down for scenario selection and similar UI controls. |
-| **React dashboard** | `ui/src/App.tsx` | Real-time pipeline UI, schedule grid, RAG/code logs, fairness metrics, floating timer. |
+| Component                  | Location                           | Responsibility                                                                              |
+| -------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| **FastAPI server**         | `src/server.py`                    | Exposes `/api/stream?case=a\|b` (SSE) for scenario-aware pipeline streaming.                |
+| **LangGraph orchestrator** | `src/agents/orchestrator.py`       | Compiles the agent graph, routes refinement loop, handles revert on refinement failure.     |
+| **WorkersAgent**           | `src/agents/workers_agent.py`      | Parses natural-language preferences (IT/EN) into structured JSON with role detection.       |
+| **RagAgent**               | `src/agents/rag_agent.py`          | ReAct agent over `regolamento_ospedaliero.pdf` for compliance checks on custom constraints. |
+| **DraftingAgent**          | `src/agents/drafting_agent.py`     | Builds CP-SAT model (Caso A/B coverage); generates custom soft-constraint code on demand.   |
+| **VerificationAgent**      | `src/agents/verification_agent.py` | Deterministic validation of hard constraints incl. specialist coverage (Caso B).            |
+| **FairnessAgent**          | `src/agents/fairness_agent.py`     | Computes satisfaction scores and identifies the worst-off worker.                           |
+| **Select component**       | `ui/src/components/base/select/`   | Reusable custom drop-down for scenario selection and similar UI controls.                   |
+| **React dashboard**        | `ui/src/App.tsx`                   | Real-time pipeline UI, schedule grid, RAG/code logs, fairness metrics, floating timer.      |
 
 ## Getting Started
 
