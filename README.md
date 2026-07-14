@@ -213,6 +213,11 @@ Use the **Scenario** drop-down in the UI or the `CASE` variable in `main.py` to 
 └── README.md
 ```
 
+## Execution Video
+
+<!-- TODO: insert link to execution video -->
+<!-- ![Execution demo](path/to/video.mp4) -->
+
 ## Resources
 
 - [LangGraph documentation](https://langchain-ai.github.io/langgraph/)
