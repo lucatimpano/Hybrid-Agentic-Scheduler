@@ -98,7 +98,7 @@ class FairnessAgent:
             elif soft.type == "max_shifts_per_week":
                 max_allowed = int(soft.value)
                 violated_weeks = 0
-                #FIX CONSEGUENTE: Adesso week_key è una tupla (year, week_number)
+                
                 for week_key, shifts in shifts_by_week.items():
                     if len(shifts) > max_allowed:
                         violated_weeks += 1
@@ -108,7 +108,7 @@ class FairnessAgent:
                     score += abs(soft.weight)
             elif soft.type == "avoid_afternoon_and_night_same_week":
                 combinations_violated = 0
-                # FIX CONSEGUENTE: Adesso week_key è una tupla (year, week_number)
+                
                 for week_key, shifts in shifts_by_week.items():
                     if "Afternoon" in shifts and "Night" in shifts:
                         combinations_violated += 1

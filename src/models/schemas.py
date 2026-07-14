@@ -12,9 +12,9 @@ from typing import Literal, TypedDict
 from pydantic import BaseModel, Field
 
 
-# ============================================================
+
 # COSTANTI GLOBALI
-# ============================================================
+
 
 SCHEDULE_START = "2026-12-07"   # Primo giorno della turnazione
 SCHEDULE_END   = "2027-01-06"   # Ultimo giorno della turnazione
@@ -28,6 +28,7 @@ SHIFT_HOURS: list[int] = [6, 6, 12]
 MAX_WEEKLY_HOURS          = 36   # Ore massime in qualsiasi finestra mobile di 7 giorni
 REQUIRED_SHIFTS_PER_MONTH = 25   # Turni obbligatori per ogni lavoratore nel mese
 REST_DAYS_AFTER_NIGHT     = 2    # Giorni liberi obbligatori dopo un turno notturno
+MAX_RETRIES               = 3    # Tentativi massimi per nodo in errore
 
 # Type alias riusabili
 ShiftType   = Literal["Morning", "Afternoon", "Night"]

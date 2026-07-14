@@ -26,26 +26,21 @@ class DraftingAgent:
     I vincoli soft custom (type='custom') vengono gestiti tramite generazione di codice on-demand.
     """
 
-    # ------------------------------------------------------------------ #
-    #  INITIALIZER                                                         #
-    # ------------------------------------------------------------------ #
+
+    #  INITIALIZER                                                         
+
 
     def __init__(self):
         self.llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite", temperature=0)
         self.custom_constraints_cache = {}  # Cache: (worker_idx, natural_language_text) -> generated_code
 
-    # ------------------------------------------------------------------ #
-    #  PRIVATE: TOOL BUILDER                                               #
-    # ------------------------------------------------------------------ #
+
+    #  PRIVATE: TOOL BUILDER                                               
+
 
     def _build_scheduler_tools(self, wrapper: SmartSchedulerWrapper) -> list:
         """
         Builds the list of LangChain tools for the scheduling agent.
-
-        ARCHITECTURAL NOTE: The original 5 tools have been merged into 2 to reduce
-        API round-trips. With 5 separate tools, the ReAct agent made one API call per
-        tool, exhausting the Free Tier quota (429 RESOURCE_EXHAUSTED). With 2 tools,
-        the agent requires at most 2 API calls to generate a complete schedule.
         """
         # Capture `self` (the DraftingAgent instance) in the closure so the inner
         # tools can call self._apply_custom_soft_constraints without scope issues.
@@ -118,9 +113,9 @@ class DraftingAgent:
 
         return [apply_all_constraints, solve_and_export]
 
-    # ------------------------------------------------------------------ #
-    #  PRIVATE: CUSTOM SOFT CONSTRAINT GENERATOR                          #
-    # ------------------------------------------------------------------ #
+
+    #  PRIVATE: CUSTOM SOFT CONSTRAINT GENERATOR                          
+
 
     def _apply_custom_soft_constraints(self, wrapper: SmartSchedulerWrapper, preferences: dict) -> None:
         """
@@ -181,7 +176,7 @@ class DraftingAgent:
                         content = content[0].get("text", str(content[0])) if isinstance(content[0], dict) else str(content[0])
                     generated_code = content.strip()
 
-                    # Salva il codice generato grezzo (senza prefisso del peso) in cache
+                    # Salva il codice generato grezzo in cache
                     self.custom_constraints_cache[cache_key] = generated_code
 
                     # Registra il codice con il peso corrente prependato
@@ -195,66 +190,48 @@ class DraftingAgent:
                 except Exception as e:
                     print(f"  [WARN] Custom constraint generation for {worker_id} failed: {e}")
 
-    # ------------------------------------------------------------------ #
-    #  PUBLIC: DRAFT (Phase 2)                                            #
-    # ------------------------------------------------------------------ #
 
-    def draft(self, preferences: dict, num_workers: int, num_days: int, has_specialist: bool = False) -> dict:
-        """Phase 2: Generates the initial schedule draft."""
-        wrapper = SmartSchedulerWrapper(num_workers, num_days)
-        tools = self._build_scheduler_tools(wrapper)
-        context = SchedulerContext(preferences, num_workers, num_days, has_specialist)
+    #  PUBLIC: DRAFT (Phase 2)                                            
 
-        agent = create_agent(
-            model=self.llm,
-            tools=tools,
-            system_prompt=prompts.SCHEDULER_SYSTEM,
-            context_schema=SchedulerContext
-        )
 
-        result = agent.invoke(
-            {"messages": [{"role": "user", "content": "Generate the initial schedule draft."}]},
-            context=context
-        )
-
-        last_msg = result["messages"][-1]
-        if hasattr(last_msg, "content") and isinstance(last_msg.content, str):
-            try:
-                return json.loads(last_msg.content)
-            except Exception:
-                pass
-        return result
-
-    # ------------------------------------------------------------------ #
-    #  PUBLIC: REFINE (Phase 4)                                           #
-    # ------------------------------------------------------------------ #
-
-    def refine(
+    def draft(
         self,
         preferences: dict,
-        current_schedule: dict,
-        worst_worker: str,
         num_workers: int,
         num_days: int,
-        has_specialist: bool = False
+        has_specialist: bool = False,
+        worst_worker: str | None = None,
     ) -> dict:
         """
-        Phase 4: Refines the schedule to improve satisfaction for the most disadvantaged worker.
-        Doubles that worker's preference weights before re-solving to orient the Maximin
-        objective toward a fairer outcome for them.
+        Phase 2 / 4: Generates or refines the schedule draft.
+        If worst_worker is provided (refinement), boosts that worker's
+        preference weights to orient the Maximin objective toward them.
         """
-        boosted_prefs = copy.deepcopy(preferences)
-        workers_dict = boosted_prefs.get("workers", boosted_prefs)
+        boosted_prefs = preferences
+        system_prompt = prompts.SCHEDULER_SYSTEM
+        user_msg = "Generate the initial schedule draft."
 
-        if worst_worker in workers_dict:
-            worker_data = workers_dict[worst_worker]
-
-            if "shift_weights" in worker_data:
-                worker_data["shift_weights"] = [w * 2 for w in worker_data["shift_weights"]]
-
-            for sc in worker_data.get("soft_constraints", []):
-                if "weight" in sc:
-                    sc["weight"] = max(min(sc["weight"] * 2, 100), -100)
+        if worst_worker:
+            print(f"   [DRAFT] Refinement mode: boosting weights for '{worst_worker}'")
+            boosted_prefs = copy.deepcopy(preferences)
+            workers_dict = boosted_prefs.get("workers", boosted_prefs)
+            if worst_worker in workers_dict:
+                worker_data = workers_dict[worst_worker]
+                if "shift_weights" in worker_data:
+                    clamped_weights = []
+                    for w in worker_data["shift_weights"]:
+                        doubled = w * 2
+                        if doubled > 10:
+                            doubled = 10
+                        elif doubled < -10:
+                            doubled = -10
+                        clamped_weights.append(doubled)
+                    worker_data["shift_weights"] = clamped_weights
+                for sc in worker_data.get("soft_constraints", []):
+                    if "weight" in sc:
+                        sc["weight"] = max(min(sc["weight"] * 2, 10), -10)
+            system_prompt = prompts.refine_system(worst_worker)
+            user_msg = f"Regenerate the schedule prioritizing {worst_worker}."
 
         wrapper = SmartSchedulerWrapper(num_workers, num_days)
         tools = self._build_scheduler_tools(wrapper)
@@ -263,12 +240,12 @@ class DraftingAgent:
         agent = create_agent(
             model=self.llm,
             tools=tools,
-            system_prompt=prompts.refine_system(worst_worker),
+            system_prompt=system_prompt,
             context_schema=SchedulerContext
         )
 
         result = agent.invoke(
-            {"messages": [{"role": "user", "content": f"Regenerate the schedule prioritizing {worst_worker}."}]},
+            {"messages": [{"role": "user", "content": user_msg}]},
             context=context
         )
 

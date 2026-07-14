@@ -5,9 +5,9 @@ Keeping prompts in a dedicated file separates AI configuration from business log
 making them easy to version, review, test, and iterate on independently.
 """
 
-# ------------------------------------------------------------------ #
-#  WORKERS AGENT — Parsing Phase (Phase 1)                           #
-# ------------------------------------------------------------------ #
+
+#  WORKERS AGENT — Parsing Phase (Phase 1)                           
+
 
 WORKERS_SYSTEM = """\
 You are an agent for decomposing and parsing worker preferences (Phase 1).
@@ -125,9 +125,9 @@ If critical information is missing, use reasonable default values but always ann
 """
 
 
-# ------------------------------------------------------------------ #
-#  SCHEDULER AGENT — Draft Phase (Phase 2)                           #
-# ------------------------------------------------------------------ #
+
+#  SCHEDULER AGENT — Draft Phase (Phase 2)                           
+
 
 SCHEDULER_SYSTEM = """\
 You are an expert hospital workforce scheduling agent specialized in CP-SAT constraint programming.
@@ -148,9 +148,9 @@ in a strict, predefined sequence.
 - After `solve_and_export` returns, your task is complete."""
 
 
-# ------------------------------------------------------------------ #
-#  SCHEDULER AGENT — Refine Phase (Phase 4)                          #
-# ------------------------------------------------------------------ #
+
+#  SCHEDULER AGENT — Refine Phase (Phase 4)                          
+
 
 REFINE_SYSTEM = """\
 You are an expert hospital workforce scheduling agent specialized in CP-SAT constraint programming.
@@ -178,9 +178,9 @@ def refine_system(worst_worker: str) -> str:
     return REFINE_SYSTEM + f"\n\n## Disadvantaged Worker\n`{worst_worker}`"
 
 
-# ------------------------------------------------------------------ #
-#  CUSTOM SOFT CONSTRAINT GENERATOR                                   #
-# ------------------------------------------------------------------ #
+
+#  CUSTOM SOFT CONSTRAINT GENERATOR                                   
+
 
 CUSTOM_CONSTRAINT_SYSTEM = """\
 You are a Python expert specializing in Google OR-Tools CP-SAT constraint programming.
@@ -236,9 +236,9 @@ def custom_constraint_user(worker_idx: int, natural_language: str, weight: int) 
     )
 
 
-# ------------------------------------------------------------------ #
-#  RAG AGENT — Compliance Verification Phase                         #
-# ------------------------------------------------------------------ #
+
+#  RAG AGENT — Compliance Verification Phase                         
+
 
 RAG_SYSTEM = """\
 You are an institutional compliance auditor for a hospital. Your ONLY job is to evaluate

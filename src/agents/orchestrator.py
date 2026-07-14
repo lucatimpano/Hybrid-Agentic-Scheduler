@@ -1,15 +1,12 @@
-import copy
 import json
 from langgraph.graph import StateGraph, START, END
 
-from src.models.schemas import SchedulerState, NUM_DAYS
+from src.models.schemas import SchedulerState, NUM_DAYS, MAX_RETRIES
 from src.agents.workers_agent import WorkersAgent
 from src.agents.rag_agent import RagAgent
 from src.agents.drafting_agent import DraftingAgent
 from src.agents.verification_agent import VerificationAgent
 from src.agents.fairness_agent import FairnessAgent
-
-MAX_RETRIES = 3
 
 # Inizializzazione globale degli agenti (una sola volta)
 workers_agent = WorkersAgent()
@@ -18,9 +15,9 @@ drafting_agent = DraftingAgent()
 verification_agent = VerificationAgent()
 fairness_agent = FairnessAgent()
 
-# -----------------------------------------------------------------------------
+
 # NODI
-# -----------------------------------------------------------------------------
+
 
 def worker_node(state: SchedulerState):
     """Estrae le preferenze dal testo libero usando WorkersAgent."""
@@ -112,7 +109,13 @@ def draft_node(state: SchedulerState):
             break
 
     try:
-        schedule = drafting_agent.draft(prefs, num_workers=num_workers, num_days=NUM_DAYS, has_specialist=has_specialist)
+        schedule = drafting_agent.draft(
+            prefs,
+            num_workers=num_workers,
+            num_days=NUM_DAYS,
+            has_specialist=has_specialist,
+            worst_worker=state.get("worst_worker"),
+        )
     except Exception as e:
         count = state.get("error_count", 0) + 1
         print(f"   [DRAFT] Errore (tentativo {count}): {e}")
@@ -167,35 +170,20 @@ def fairness_node(state: SchedulerState):
 
 def refine_node(state: SchedulerState):
     """
-    Fase di refinement: boosta i pesi del worst_worker (duplicandoli) senza
-    rilanciare il solver. Il controllo torna a `draft_node`, che rigenera la
-    turnazione con i nuovi pesi. Questo rende esplicito il loop:
+    Fase di refinement: segnala a draft_node di boostare i pesi del worst_worker
+    (il boost avviene in draft_node quando worst_worker e' settato).
+    Il controllo torna a draft_node, che rigenera la turnazione con i nuovi pesi.
         fairness -> refine -> draft -> verify -> fairness -> ...
     """
     print(f"-> [NODE] refine_node (iterazione {state.get('iteration', 0) + 1})")
-    boosted_prefs = copy.deepcopy(state["preferences"])
-    workers_dict = boosted_prefs.get("workers", boosted_prefs)
     worst_worker = state.get("worst_worker")
-
-    if worst_worker and worst_worker in workers_dict:
-        worker_data = workers_dict[worst_worker]
-        if "shift_weights" in worker_data:
-            # Clamp ai limiti dello schema Pydantic [-10, 10]
-            worker_data["shift_weights"] = [
-                max(min(w * 2, 10), -10) for w in worker_data["shift_weights"]
-            ]
-        for sc in worker_data.get("soft_constraints", []):
-            if "weight" in sc:
-                # Clamp ai limiti dello schema Pydantic [-10, 10]
-                sc["weight"] = max(min(sc["weight"] * 2, 10), -10)
-        print(f"   [REFINE] Pesi raddoppiati per worst_worker '{worst_worker}'.")
+    if not worst_worker:
+        print("   [REFINE] WARN: worst_worker non presente nello stato.")
     else:
-        print(f"   [REFINE] WARN: worst_worker '{worst_worker}' non trovato tra i workers.")
+        print(f"   [REFINE] Richiesto boosting pesi per worst_worker '{worst_worker}'.")
 
-    # Non rilanciamo qui il solver: ritorniamo a draft_node per rigenerare.
     # Salviamo schedule e gap correnti per eventuale rollback se il refinement peggiora.
     return {
-        "preferences": boosted_prefs,
         "violations": [],
         "error_count": 0,
         "iteration": state.get("iteration", 0) + 1,
@@ -204,9 +192,9 @@ def refine_node(state: SchedulerState):
     }
 
 
-# -----------------------------------------------------------------------------
-# ROUTING (Bivi condizionali)
-# -----------------------------------------------------------------------------
+
+# Bivi condizionali
+
 
 def should_retry_parse(state: SchedulerState) -> str:
     if state.get("violations"):
@@ -299,9 +287,9 @@ def should_retry_refine(state: SchedulerState) -> str:
     return "draft_node"
 
 
-# -----------------------------------------------------------------------------
+
 # COSTRUZIONE DEL GRAFO
-# -----------------------------------------------------------------------------
+
 
 def create_scheduler_graph():
     workflow = StateGraph(SchedulerState)

@@ -131,31 +131,3 @@ class RagAgent:
                 "error": "Risposta non in formato JSON valido",
                 "raw_response": last_message
             }
-
-if __name__ == "__main__":
-    print("=== AVVIO AGENTE RAG COMPLIANCE ===")
-    agent = RagAgent()
-    
-    test_preferences = {
-        "workers": {
-            "ID_0": {
-                "role": "standard",
-                "hard_constraints": [],
-                "soft_constraints": [
-                    {
-                        "type": "custom",
-                        "value": None,
-                        "shift": None,
-                        "weight": -6,
-                        "natural_language": "Vorrei evitare di fare turni notturni se possibile.",
-                        "description": "Evitare notti"
-                    }
-                ]
-            }
-        }
-    }
-    
-    print("\nEsecuzione della verifica di conformità...")
-    report = agent.verify_compliance(test_preferences)
-    print("\n=== REPORT DI CONFORMITÀ OTTENUTO ===")
-    print(json.dumps(report, indent=2, ensure_ascii=False))
