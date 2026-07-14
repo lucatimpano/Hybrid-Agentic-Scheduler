@@ -215,8 +215,11 @@ Use the **Scenario** drop-down in the UI or the `CASE` variable in `main.py` to 
 
 ## Execution Video
 
-<!-- TODO: insert link to execution video -->
-<!-- ![Execution demo](path/to/video.mp4) -->
+
+
+https://github.com/user-attachments/assets/670f48bf-8f32-4e5f-8aa9-33453e60163b
+
+
 
 ## Resources
 
