@@ -17,7 +17,7 @@
 [![RAG](https://img.shields.io/badge/RAG-ReAct-8B5CF6?style=flat-square&logo=readthedocs&logoColor=white)](https://python.langchain.com/docs/concepts/rag/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
-[Overview](#overview) · [Features](#features) · [Architecture](#architecture) · [Getting Started](#getting-started) · [Usage](#usage) · [Project Structure](#project-structure)
+[Overview](#overview) · [Features](#features) · [Architecture](#architecture) · [Getting Started](#getting-started) · [Usage](#usage) · [Project Structure](#project-structure) · [Video Demo](#execution-video)
 
 </div>
 
