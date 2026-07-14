@@ -69,7 +69,7 @@ graph TD
 | **LangGraph orchestrator** | `src/agents/orchestrator.py`       | Compiles the agent graph, routes refinement loop, handles revert on refinement failure.     |
 | **WorkersAgent**           | `src/agents/workers_agent.py`      | Parses natural-language preferences (IT/EN) into structured JSON with role detection.       |
 | **RagAgent**               | `src/agents/rag_agent.py`          | ReAct agent over `regolamento_ospedaliero.pdf` for compliance checks on custom constraints. |
-| **DraftingAgent**          | `src/agents/drafting_agent.py`     | Builds CP-SAT model (Caso A/B coverage); generates custom soft-constraint code on demand.   |
+| **DraftingAgent**          | `src/agents/drafting_agent.py`     | Builds CP-SAT model (Caso A/B coverage); handles both initial draft and fairness refinement via `worst_worker`-driven weight boosting; generates custom soft-constraint code on demand. |
 | **VerificationAgent**      | `src/agents/verification_agent.py` | Deterministic validation of hard constraints incl. specialist coverage (Caso B).            |
 | **FairnessAgent**          | `src/agents/fairness_agent.py`     | Computes satisfaction scores and identifies the worst-off worker.                           |
 | **Select component**       | `ui/src/components/base/select/`   | Reusable custom drop-down for scenario selection and similar UI controls.                   |
