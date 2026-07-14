@@ -3,13 +3,6 @@
         {
             "date": "2026-12-07",
             "shift": "Morning",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-07",
-            "shift": "Morning",
             "worker_id": "ID_4",
             "role_played": "standard",
             "original_role": "standard"
@@ -24,21 +17,21 @@
         {
             "date": "2026-12-07",
             "shift": "Morning",
-            "worker_id": "ID_7",
+            "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-07",
-            "shift": "Morning",
-            "worker_id": "ID_8",
+            "shift": "Afternoon",
+            "worker_id": "ID_0",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-07",
-            "shift": "Morning",
-            "worker_id": "ID_9",
+            "shift": "Afternoon",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -46,6 +39,20 @@
             "date": "2026-12-07",
             "shift": "Afternoon",
             "worker_id": "ID_2",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-07",
+            "shift": "Afternoon",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-07",
+            "shift": "Afternoon",
+            "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -65,21 +72,21 @@
         },
         {
             "date": "2026-12-07",
-            "shift": "Afternoon",
+            "shift": "Night",
+            "worker_id": "ID_8",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-07",
+            "shift": "Night",
             "worker_id": "ID_12",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-07",
-            "shift": "Night",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-07",
-            "shift": "Night",
+            "date": "2026-12-08",
+            "shift": "Morning",
             "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
@@ -94,6 +101,13 @@
         {
             "date": "2026-12-08",
             "shift": "Morning",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-08",
+            "shift": "Morning",
             "worker_id": "ID_4",
             "role_played": "standard",
             "original_role": "standard"
@@ -101,342 +115,335 @@
         {
             "date": "2026-12-08",
             "shift": "Morning",
-            "worker_id": "ID_6",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-08",
-            "shift": "Morning",
-            "worker_id": "ID_11",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-08",
-            "shift": "Morning",
-            "worker_id": "ID_12",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-08",
-            "shift": "Afternoon",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-08",
-            "shift": "Afternoon",
-            "worker_id": "ID_7",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-08",
-            "shift": "Afternoon",
-            "worker_id": "ID_9",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-08",
-            "shift": "Night",
             "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-08",
-            "shift": "Night",
-            "worker_id": "ID_8",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-09",
             "shift": "Morning",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-09",
-            "shift": "Morning",
-            "worker_id": "ID_4",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-09",
-            "shift": "Morning",
-            "worker_id": "ID_9",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-09",
-            "shift": "Morning",
-            "worker_id": "ID_11",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-09",
-            "shift": "Afternoon",
-            "worker_id": "ID_2",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-09",
-            "shift": "Afternoon",
-            "worker_id": "ID_10",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-09",
-            "shift": "Night",
             "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-09",
-            "shift": "Night",
-            "worker_id": "ID_12",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-10",
+            "date": "2026-12-08",
             "shift": "Morning",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-10",
-            "shift": "Morning",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-10",
-            "shift": "Morning",
-            "worker_id": "ID_4",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-10",
-            "shift": "Morning",
-            "worker_id": "ID_11",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-10",
-            "shift": "Afternoon",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-10",
-            "shift": "Afternoon",
-            "worker_id": "ID_2",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-10",
-            "shift": "Afternoon",
-            "worker_id": "ID_10",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-10",
-            "shift": "Night",
             "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-10",
-            "shift": "Night",
+            "date": "2026-12-08",
+            "shift": "Afternoon",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-08",
+            "shift": "Afternoon",
             "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-11",
-            "shift": "Morning",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-11",
-            "shift": "Morning",
+            "date": "2026-12-08",
+            "shift": "Night",
             "worker_id": "ID_10",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-11",
-            "shift": "Morning",
+            "date": "2026-12-08",
+            "shift": "Night",
             "worker_id": "ID_11",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-11",
-            "shift": "Afternoon",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-11",
-            "shift": "Afternoon",
-            "worker_id": "ID_8",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-11",
-            "shift": "Night",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-11",
-            "shift": "Night",
+            "date": "2026-12-09",
+            "shift": "Morning",
             "worker_id": "ID_4",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-12",
-            "shift": "Morning",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-12",
-            "shift": "Morning",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-12",
+            "date": "2026-12-09",
             "shift": "Morning",
             "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-12",
+            "date": "2026-12-09",
             "shift": "Morning",
             "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-12",
+            "date": "2026-12-09",
             "shift": "Afternoon",
-            "worker_id": "ID_8",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-12",
-            "shift": "Afternoon",
-            "worker_id": "ID_11",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-12",
-            "shift": "Afternoon",
-            "worker_id": "ID_12",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-12",
-            "shift": "Night",
             "worker_id": "ID_2",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-12",
-            "shift": "Night",
-            "worker_id": "ID_10",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-13",
-            "shift": "Morning",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-13",
-            "shift": "Morning",
-            "worker_id": "ID_8",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-13",
-            "shift": "Afternoon",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-13",
+            "date": "2026-12-09",
             "shift": "Afternoon",
             "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-13",
+            "date": "2026-12-09",
             "shift": "Afternoon",
             "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-13",
-            "shift": "Afternoon",
-            "worker_id": "ID_12",
+            "date": "2026-12-09",
+            "shift": "Night",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-13",
+            "date": "2026-12-09",
+            "shift": "Night",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-10",
+            "shift": "Morning",
+            "worker_id": "ID_4",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-10",
+            "shift": "Morning",
+            "worker_id": "ID_6",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-10",
+            "shift": "Morning",
+            "worker_id": "ID_8",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-10",
+            "shift": "Afternoon",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-10",
+            "shift": "Afternoon",
+            "worker_id": "ID_7",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-10",
             "shift": "Night",
             "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
+            "date": "2026-12-10",
+            "shift": "Night",
+            "worker_id": "ID_9",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-10",
+            "shift": "Night",
+            "worker_id": "ID_12",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-11",
+            "shift": "Morning",
+            "worker_id": "ID_4",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-11",
+            "shift": "Morning",
+            "worker_id": "ID_8",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-11",
+            "shift": "Morning",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-11",
+            "shift": "Morning",
+            "worker_id": "ID_11",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-11",
+            "shift": "Afternoon",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-11",
+            "shift": "Afternoon",
+            "worker_id": "ID_2",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-11",
+            "shift": "Night",
+            "worker_id": "ID_6",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-11",
+            "shift": "Night",
+            "worker_id": "ID_7",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-12",
+            "shift": "Morning",
+            "worker_id": "ID_1",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-12",
+            "shift": "Morning",
+            "worker_id": "ID_4",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-12",
+            "shift": "Morning",
+            "worker_id": "ID_8",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-12",
+            "shift": "Afternoon",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-12",
+            "shift": "Afternoon",
+            "worker_id": "ID_11",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-12",
+            "shift": "Night",
+            "worker_id": "ID_2",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-12",
+            "shift": "Night",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-13",
+            "shift": "Morning",
+            "worker_id": "ID_1",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-13",
+            "shift": "Morning",
+            "worker_id": "ID_8",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-13",
+            "shift": "Morning",
+            "worker_id": "ID_11",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-13",
+            "shift": "Morning",
+            "worker_id": "ID_12",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-13",
+            "shift": "Afternoon",
+            "worker_id": "ID_5",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-13",
+            "shift": "Afternoon",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
             "date": "2026-12-13",
             "shift": "Night",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-13",
+            "shift": "Night",
+            "worker_id": "ID_9",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-14",
+            "shift": "Morning",
+            "worker_id": "ID_4",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-14",
+            "shift": "Morning",
             "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
@@ -444,13 +451,6 @@
         {
             "date": "2026-12-14",
             "shift": "Morning",
-            "worker_id": "ID_4",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-14",
-            "shift": "Morning",
             "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
@@ -458,28 +458,21 @@
         {
             "date": "2026-12-14",
             "shift": "Morning",
-            "worker_id": "ID_8",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-14",
-            "shift": "Morning",
-            "worker_id": "ID_12",
+            "worker_id": "ID_10",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-14",
             "shift": "Afternoon",
-            "worker_id": "ID_3",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-14",
             "shift": "Afternoon",
-            "worker_id": "ID_9",
+            "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -493,69 +486,55 @@
         {
             "date": "2026-12-14",
             "shift": "Night",
-            "worker_id": "ID_0",
+            "worker_id": "ID_8",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-14",
             "shift": "Night",
-            "worker_id": "ID_1",
+            "worker_id": "ID_12",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-15",
             "shift": "Morning",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-15",
-            "shift": "Morning",
-            "worker_id": "ID_4",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-15",
-            "shift": "Morning",
-            "worker_id": "ID_9",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-15",
-            "shift": "Afternoon",
             "worker_id": "ID_2",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-15",
-            "shift": "Afternoon",
-            "worker_id": "ID_10",
+            "shift": "Morning",
+            "worker_id": "ID_4",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-15",
             "shift": "Afternoon",
-            "worker_id": "ID_11",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-15",
             "shift": "Afternoon",
-            "worker_id": "ID_12",
+            "worker_id": "ID_3",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-15",
-            "shift": "Night",
+            "shift": "Afternoon",
+            "worker_id": "ID_5",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-15",
+            "shift": "Afternoon",
             "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
@@ -563,21 +542,35 @@
         {
             "date": "2026-12-15",
             "shift": "Night",
-            "worker_id": "ID_8",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-15",
+            "shift": "Night",
+            "worker_id": "ID_11",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-16",
             "shift": "Morning",
-            "worker_id": "ID_2",
+            "worker_id": "ID_4",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-16",
             "shift": "Morning",
-            "worker_id": "ID_10",
+            "worker_id": "ID_6",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-16",
+            "shift": "Afternoon",
+            "worker_id": "ID_0",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -597,62 +590,27 @@
         },
         {
             "date": "2026-12-16",
-            "shift": "Night",
-            "worker_id": "ID_6",
+            "shift": "Afternoon",
+            "worker_id": "ID_7",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-16",
+            "shift": "Afternoon",
+            "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-16",
             "shift": "Night",
-            "worker_id": "ID_12",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-17",
-            "shift": "Morning",
-            "worker_id": "ID_4",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-17",
-            "shift": "Morning",
-            "worker_id": "ID_11",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-17",
-            "shift": "Afternoon",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-17",
-            "shift": "Afternoon",
             "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-17",
-            "shift": "Afternoon",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-17",
-            "shift": "Afternoon",
-            "worker_id": "ID_9",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-17",
+            "date": "2026-12-16",
             "shift": "Night",
             "worker_id": "ID_2",
             "role_played": "standard",
@@ -660,176 +618,239 @@
         },
         {
             "date": "2026-12-17",
-            "shift": "Night",
-            "worker_id": "ID_5",
+            "shift": "Morning",
+            "worker_id": "ID_3",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-18",
+            "date": "2026-12-17",
             "shift": "Morning",
             "worker_id": "ID_4",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-18",
+            "date": "2026-12-17",
             "shift": "Morning",
-            "worker_id": "ID_10",
+            "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-18",
+            "date": "2026-12-17",
             "shift": "Afternoon",
             "worker_id": "ID_0",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-18",
+            "date": "2026-12-17",
             "shift": "Afternoon",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-18",
-            "shift": "Afternoon",
-            "worker_id": "ID_9",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-18",
-            "shift": "Afternoon",
-            "worker_id": "ID_11",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-18",
-            "shift": "Night",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-18",
-            "shift": "Night",
             "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-19",
-            "shift": "Morning",
+            "date": "2026-12-17",
+            "shift": "Afternoon",
             "worker_id": "ID_8",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-19",
-            "shift": "Morning",
-            "worker_id": "ID_9",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-19",
-            "shift": "Morning",
-            "worker_id": "ID_12",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-19",
-            "shift": "Afternoon",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-19",
-            "shift": "Afternoon",
-            "worker_id": "ID_6",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-19",
-            "shift": "Afternoon",
-            "worker_id": "ID_10",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-19",
+            "date": "2026-12-17",
             "shift": "Night",
-            "worker_id": "ID_4",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-19",
-            "shift": "Night",
-            "worker_id": "ID_11",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-20",
-            "shift": "Morning",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-20",
-            "shift": "Morning",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-20",
-            "shift": "Morning",
-            "worker_id": "ID_8",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-20",
-            "shift": "Morning",
-            "worker_id": "ID_12",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-20",
-            "shift": "Afternoon",
-            "worker_id": "ID_2",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-20",
-            "shift": "Afternoon",
             "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-20",
+            "date": "2026-12-17",
             "shift": "Night",
             "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
+            "date": "2026-12-17",
+            "shift": "Night",
+            "worker_id": "ID_12",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-18",
+            "shift": "Morning",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-18",
+            "shift": "Morning",
+            "worker_id": "ID_8",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-18",
+            "shift": "Morning",
+            "worker_id": "ID_11",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-18",
+            "shift": "Afternoon",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-18",
+            "shift": "Afternoon",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-18",
+            "shift": "Night",
+            "worker_id": "ID_7",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-18",
+            "shift": "Night",
+            "worker_id": "ID_9",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-19",
+            "shift": "Morning",
+            "worker_id": "ID_1",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-19",
+            "shift": "Morning",
+            "worker_id": "ID_2",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-19",
+            "shift": "Morning",
+            "worker_id": "ID_8",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-19",
+            "shift": "Morning",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-19",
+            "shift": "Afternoon",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-19",
+            "shift": "Afternoon",
+            "worker_id": "ID_11",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-19",
+            "shift": "Night",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-19",
+            "shift": "Night",
+            "worker_id": "ID_4",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-20",
+            "shift": "Morning",
+            "worker_id": "ID_6",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-20",
+            "shift": "Morning",
+            "worker_id": "ID_8",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-20",
+            "shift": "Afternoon",
+            "worker_id": "ID_1",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-20",
+            "shift": "Afternoon",
+            "worker_id": "ID_5",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-20",
+            "shift": "Afternoon",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-20",
+            "shift": "Afternoon",
+            "worker_id": "ID_11",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-20",
+            "shift": "Afternoon",
+            "worker_id": "ID_12",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
             "date": "2026-12-20",
             "shift": "Night",
-            "worker_id": "ID_10",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-20",
+            "shift": "Night",
+            "worker_id": "ID_2",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-21",
+            "shift": "Morning",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -842,7 +863,7 @@
         },
         {
             "date": "2026-12-21",
-            "shift": "Morning",
+            "shift": "Afternoon",
             "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
@@ -850,14 +871,21 @@
         {
             "date": "2026-12-21",
             "shift": "Afternoon",
-            "worker_id": "ID_2",
+            "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-21",
             "shift": "Afternoon",
-            "worker_id": "ID_3",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-21",
+            "shift": "Afternoon",
+            "worker_id": "ID_11",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -871,7 +899,7 @@
         {
             "date": "2026-12-21",
             "shift": "Night",
-            "worker_id": "ID_1",
+            "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -883,16 +911,30 @@
             "original_role": "standard"
         },
         {
-            "date": "2026-12-21",
-            "shift": "Night",
-            "worker_id": "ID_9",
+            "date": "2026-12-22",
+            "shift": "Morning",
+            "worker_id": "ID_3",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-22",
             "shift": "Morning",
-            "worker_id": "ID_0",
+            "worker_id": "ID_4",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-22",
+            "shift": "Morning",
+            "worker_id": "ID_5",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-22",
+            "shift": "Morning",
+            "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -906,21 +948,7 @@
         {
             "date": "2026-12-22",
             "shift": "Afternoon",
-            "worker_id": "ID_2",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-22",
-            "shift": "Afternoon",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-22",
-            "shift": "Afternoon",
-            "worker_id": "ID_5",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -934,7 +962,7 @@
         {
             "date": "2026-12-22",
             "shift": "Night",
-            "worker_id": "ID_4",
+            "worker_id": "ID_10",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -955,49 +983,63 @@
         {
             "date": "2026-12-23",
             "shift": "Morning",
-            "worker_id": "ID_5",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-23",
-            "shift": "Morning",
-            "worker_id": "ID_10",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-23",
-            "shift": "Afternoon",
-            "worker_id": "ID_2",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-23",
-            "shift": "Afternoon",
             "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-23",
-            "shift": "Night",
-            "worker_id": "ID_6",
+            "shift": "Morning",
+            "worker_id": "ID_9",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-23",
+            "shift": "Morning",
+            "worker_id": "ID_12",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-23",
+            "shift": "Afternoon",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-23",
+            "shift": "Afternoon",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-23",
             "shift": "Night",
-            "worker_id": "ID_12",
+            "worker_id": "ID_2",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-23",
+            "shift": "Night",
+            "worker_id": "ID_4",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-24",
             "shift": "Morning",
-            "worker_id": "ID_0",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-24",
+            "shift": "Morning",
+            "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1011,13 +1053,6 @@
         {
             "date": "2026-12-24",
             "shift": "Morning",
-            "worker_id": "ID_8",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-24",
-            "shift": "Morning",
             "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
@@ -1025,77 +1060,56 @@
         {
             "date": "2026-12-24",
             "shift": "Afternoon",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-24",
-            "shift": "Afternoon",
-            "worker_id": "ID_5",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-24",
-            "shift": "Afternoon",
-            "worker_id": "ID_10",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-24",
-            "shift": "Night",
             "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-24",
-            "shift": "Night",
-            "worker_id": "ID_2",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-25",
-            "shift": "Morning",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-25",
-            "shift": "Morning",
-            "worker_id": "ID_4",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-25",
-            "shift": "Morning",
+            "shift": "Afternoon",
             "worker_id": "ID_8",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-25",
-            "shift": "Afternoon",
+            "date": "2026-12-24",
+            "shift": "Night",
             "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
+            "date": "2026-12-24",
+            "shift": "Night",
+            "worker_id": "ID_12",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
             "date": "2026-12-25",
-            "shift": "Afternoon",
+            "shift": "Morning",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-25",
+            "shift": "Morning",
             "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-25",
-            "shift": "Afternoon",
+            "shift": "Morning",
             "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-25",
+            "shift": "Afternoon",
+            "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1109,7 +1123,7 @@
         {
             "date": "2026-12-25",
             "shift": "Night",
-            "worker_id": "ID_3",
+            "worker_id": "ID_0",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1123,13 +1137,41 @@
         {
             "date": "2026-12-26",
             "shift": "Morning",
-            "worker_id": "ID_4",
+            "worker_id": "ID_2",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-26",
             "shift": "Morning",
+            "worker_id": "ID_6",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-26",
+            "shift": "Morning",
+            "worker_id": "ID_9",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-26",
+            "shift": "Morning",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-26",
+            "shift": "Afternoon",
+            "worker_id": "ID_1",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-26",
+            "shift": "Afternoon",
             "worker_id": "ID_8",
             "role_played": "standard",
             "original_role": "standard"
@@ -1137,146 +1179,125 @@
         {
             "date": "2026-12-26",
             "shift": "Afternoon",
+            "worker_id": "ID_11",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-26",
+            "shift": "Night",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-26",
+            "shift": "Night",
+            "worker_id": "ID_4",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-27",
+            "shift": "Morning",
             "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-26",
-            "shift": "Afternoon",
-            "worker_id": "ID_9",
+            "date": "2026-12-27",
+            "shift": "Morning",
+            "worker_id": "ID_8",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-26",
+            "date": "2026-12-27",
+            "shift": "Afternoon",
+            "worker_id": "ID_1",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-27",
             "shift": "Afternoon",
             "worker_id": "ID_10",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-26",
-            "shift": "Night",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-26",
-            "shift": "Night",
+            "date": "2026-12-27",
+            "shift": "Afternoon",
             "worker_id": "ID_11",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-27",
-            "shift": "Morning",
+            "shift": "Afternoon",
+            "worker_id": "ID_12",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-27",
+            "shift": "Night",
             "worker_id": "ID_2",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-27",
-            "shift": "Morning",
+            "shift": "Night",
             "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-27",
-            "shift": "Afternoon",
-            "worker_id": "ID_1",
+            "date": "2026-12-28",
+            "shift": "Morning",
+            "worker_id": "ID_0",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-27",
-            "shift": "Afternoon",
-            "worker_id": "ID_4",
+            "date": "2026-12-28",
+            "shift": "Morning",
+            "worker_id": "ID_10",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-27",
-            "shift": "Afternoon",
-            "worker_id": "ID_6",
+            "date": "2026-12-28",
+            "shift": "Morning",
+            "worker_id": "ID_11",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-27",
+            "date": "2026-12-28",
             "shift": "Afternoon",
-            "worker_id": "ID_8",
+            "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-27",
+            "date": "2026-12-28",
             "shift": "Afternoon",
             "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
-            "date": "2026-12-27",
-            "shift": "Night",
-            "worker_id": "ID_10",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-27",
-            "shift": "Night",
+            "date": "2026-12-28",
+            "shift": "Afternoon",
             "worker_id": "ID_12",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-28",
-            "shift": "Morning",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-28",
-            "shift": "Morning",
-            "worker_id": "ID_2",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-28",
-            "shift": "Morning",
-            "worker_id": "ID_4",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-28",
-            "shift": "Morning",
-            "worker_id": "ID_5",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-28",
-            "shift": "Morning",
-            "worker_id": "ID_7",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-28",
-            "shift": "Afternoon",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-28",
-            "shift": "Afternoon",
+            "shift": "Night",
             "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
@@ -1289,8 +1310,8 @@
             "original_role": "standard"
         },
         {
-            "date": "2026-12-28",
-            "shift": "Night",
+            "date": "2026-12-29",
+            "shift": "Morning",
             "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
@@ -1298,14 +1319,7 @@
         {
             "date": "2026-12-29",
             "shift": "Morning",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-29",
-            "shift": "Morning",
-            "worker_id": "ID_7",
+            "worker_id": "ID_10",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1319,14 +1333,21 @@
         {
             "date": "2026-12-29",
             "shift": "Afternoon",
-            "worker_id": "ID_2",
+            "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-29",
             "shift": "Afternoon",
-            "worker_id": "ID_6",
+            "worker_id": "ID_12",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-29",
+            "shift": "Night",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1338,71 +1359,57 @@
             "original_role": "standard"
         },
         {
-            "date": "2026-12-29",
-            "shift": "Night",
+            "date": "2026-12-30",
+            "shift": "Morning",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-30",
+            "shift": "Morning",
+            "worker_id": "ID_9",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-30",
+            "shift": "Morning",
+            "worker_id": "ID_12",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-30",
+            "shift": "Afternoon",
+            "worker_id": "ID_5",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-30",
+            "shift": "Afternoon",
+            "worker_id": "ID_7",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2026-12-30",
+            "shift": "Afternoon",
             "worker_id": "ID_11",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-30",
-            "shift": "Morning",
+            "shift": "Night",
             "worker_id": "ID_0",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-30",
-            "shift": "Morning",
-            "worker_id": "ID_10",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-30",
-            "shift": "Afternoon",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-30",
-            "shift": "Afternoon",
-            "worker_id": "ID_3",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-30",
-            "shift": "Afternoon",
-            "worker_id": "ID_7",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-30",
-            "shift": "Afternoon",
-            "worker_id": "ID_12",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-30",
             "shift": "Night",
-            "worker_id": "ID_5",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-30",
-            "shift": "Night",
-            "worker_id": "ID_6",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2026-12-31",
-            "shift": "Morning",
             "worker_id": "ID_2",
             "role_played": "standard",
             "original_role": "standard"
@@ -1410,14 +1417,14 @@
         {
             "date": "2026-12-31",
             "shift": "Morning",
-            "worker_id": "ID_9",
+            "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-31",
-            "shift": "Afternoon",
-            "worker_id": "ID_0",
+            "shift": "Morning",
+            "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1431,14 +1438,14 @@
         {
             "date": "2026-12-31",
             "shift": "Afternoon",
-            "worker_id": "ID_10",
+            "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2026-12-31",
             "shift": "Night",
-            "worker_id": "ID_1",
+            "worker_id": "ID_8",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1452,7 +1459,7 @@
         {
             "date": "2027-01-01",
             "shift": "Morning",
-            "worker_id": "ID_0",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1473,21 +1480,7 @@
         {
             "date": "2027-01-01",
             "shift": "Afternoon",
-            "worker_id": "ID_7",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-01",
-            "shift": "Afternoon",
-            "worker_id": "ID_8",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-01",
-            "shift": "Afternoon",
-            "worker_id": "ID_9",
+            "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1501,42 +1494,28 @@
         {
             "date": "2027-01-01",
             "shift": "Night",
-            "worker_id": "ID_2",
+            "worker_id": "ID_3",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2027-01-01",
             "shift": "Night",
-            "worker_id": "ID_3",
+            "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2027-01-02",
             "shift": "Morning",
-            "worker_id": "ID_4",
+            "worker_id": "ID_0",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2027-01-02",
             "shift": "Morning",
-            "worker_id": "ID_6",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-02",
-            "shift": "Morning",
-            "worker_id": "ID_8",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-02",
-            "shift": "Morning",
-            "worker_id": "ID_10",
+            "worker_id": "ID_2",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1557,42 +1536,49 @@
         {
             "date": "2027-01-02",
             "shift": "Afternoon",
-            "worker_id": "ID_9",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-02",
-            "shift": "Night",
-            "worker_id": "ID_0",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-02",
-            "shift": "Night",
-            "worker_id": "ID_7",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-03",
-            "shift": "Morning",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-03",
-            "shift": "Morning",
             "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
+            "date": "2027-01-02",
+            "shift": "Night",
+            "worker_id": "ID_1",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-02",
+            "shift": "Night",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
             "date": "2027-01-03",
-            "shift": "Afternoon",
-            "worker_id": "ID_5",
+            "shift": "Morning",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-03",
+            "shift": "Morning",
+            "worker_id": "ID_2",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-03",
+            "shift": "Morning",
+            "worker_id": "ID_4",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-03",
+            "shift": "Morning",
+            "worker_id": "ID_7",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1606,7 +1592,7 @@
         {
             "date": "2027-01-03",
             "shift": "Afternoon",
-            "worker_id": "ID_9",
+            "worker_id": "ID_11",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1620,14 +1606,28 @@
         {
             "date": "2027-01-03",
             "shift": "Night",
-            "worker_id": "ID_10",
+            "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2027-01-03",
             "shift": "Night",
-            "worker_id": "ID_11",
+            "worker_id": "ID_6",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-04",
+            "shift": "Morning",
+            "worker_id": "ID_0",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-04",
+            "shift": "Morning",
+            "worker_id": "ID_2",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1641,21 +1641,7 @@
         {
             "date": "2027-01-04",
             "shift": "Morning",
-            "worker_id": "ID_5",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-04",
-            "shift": "Morning",
-            "worker_id": "ID_6",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-04",
-            "shift": "Morning",
-            "worker_id": "ID_8",
+            "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1669,28 +1655,35 @@
         {
             "date": "2027-01-04",
             "shift": "Afternoon",
-            "worker_id": "ID_1",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-04",
-            "shift": "Afternoon",
-            "worker_id": "ID_2",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-04",
-            "shift": "Night",
             "worker_id": "ID_3",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2027-01-04",
+            "shift": "Afternoon",
+            "worker_id": "ID_8",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-04",
             "shift": "Night",
-            "worker_id": "ID_9",
+            "worker_id": "ID_7",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-04",
+            "shift": "Night",
+            "worker_id": "ID_11",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-05",
+            "shift": "Morning",
+            "worker_id": "ID_0",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1698,13 +1691,6 @@
             "date": "2027-01-05",
             "shift": "Morning",
             "worker_id": "ID_4",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-05",
-            "shift": "Morning",
-            "worker_id": "ID_6",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1718,14 +1704,21 @@
         {
             "date": "2027-01-05",
             "shift": "Afternoon",
-            "worker_id": "ID_5",
+            "worker_id": "ID_2",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2027-01-05",
             "shift": "Afternoon",
-            "worker_id": "ID_7",
+            "worker_id": "ID_3",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-05",
+            "shift": "Afternoon",
+            "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1733,13 +1726,6 @@
             "date": "2027-01-05",
             "shift": "Afternoon",
             "worker_id": "ID_12",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-05",
-            "shift": "Night",
-            "worker_id": "ID_2",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1751,9 +1737,16 @@
             "original_role": "standard"
         },
         {
+            "date": "2027-01-05",
+            "shift": "Night",
+            "worker_id": "ID_10",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
             "date": "2027-01-06",
             "shift": "Morning",
-            "worker_id": "ID_1",
+            "worker_id": "ID_3",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1767,14 +1760,14 @@
         {
             "date": "2027-01-06",
             "shift": "Afternoon",
-            "worker_id": "ID_4",
+            "worker_id": "ID_1",
             "role_played": "standard",
             "original_role": "standard"
         },
         {
             "date": "2027-01-06",
             "shift": "Afternoon",
-            "worker_id": "ID_10",
+            "worker_id": "ID_5",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1788,7 +1781,14 @@
         {
             "date": "2027-01-06",
             "shift": "Night",
-            "worker_id": "ID_5",
+            "worker_id": "ID_2",
+            "role_played": "standard",
+            "original_role": "standard"
+        },
+        {
+            "date": "2027-01-06",
+            "shift": "Night",
+            "worker_id": "ID_4",
             "role_played": "standard",
             "original_role": "standard"
         },
@@ -1802,14 +1802,7 @@
         {
             "date": "2027-01-06",
             "shift": "Night",
-            "worker_id": "ID_7",
-            "role_played": "standard",
-            "original_role": "standard"
-        },
-        {
-            "date": "2027-01-06",
-            "shift": "Night",
-            "worker_id": "ID_11",
+            "worker_id": "ID_9",
             "role_played": "standard",
             "original_role": "standard"
         }
